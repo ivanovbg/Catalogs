@@ -1,0 +1,24 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:textAllCaps="true"
+        app:itemIconTint="@drawable/bottom_navigation_selector"
+        app:itemTextColor="@drawable/bottom_navigation_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation"
+        app:theme="@style/BottomNavigationViewStyle">
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+</layout>
