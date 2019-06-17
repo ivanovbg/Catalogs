@@ -175,6 +175,7 @@ public class SplashActivity extends AppCompatActivity {
         if(mLocation == null){
             Toast.makeText(this, "S grad sofiq be" + text, Toast.LENGTH_LONG).show();
         }else{
+            //sad
             double latitude=mLocation.getLatitude();
             double longitude=mLocation.getLongitude();
             String msg="New Latitude: "+latitude + "New Longitude: "+longitude;
