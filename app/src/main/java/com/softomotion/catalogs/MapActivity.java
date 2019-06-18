@@ -3,11 +3,14 @@ package com.softomotion.catalogs;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -17,12 +20,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.softomotion.catalogs.data.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMapBinding;
+
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ActivityMapBinding binding;
+    private DataManager dataManager;
 
 
     @Override
@@ -35,6 +43,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
        setSupportActionBar(binding.appBar.toolbar);
+
+       dataManager = ((Catalogs)getApplication()).getDataManager();
+
+       binding.bottomNavigation.bottomNavigationView.setSelectedItemId(R.id.map);
+
+       binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+           @Override
+           public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+               if(menuItem.getItemId() == R.id.home){
+                   finish();
+               }
+               return false;
+           }
+       });
     }
 
 
@@ -51,13 +73,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        SharedPreferences prefs = getSharedPreferences("settings",
-                MODE_PRIVATE);
+//        SharedPreferences prefs = getSharedPreferences("settings",
+//                MODE_PRIVATE);
 
-        Double latitude = Double.valueOf(prefs.getString("latitude", "-34"));
-        Double longidude = Double.valueOf(prefs.getString("longitude", "151"));
+         String[] coords = dataManager.getCoords();
 
-        Log.d("TEST", prefs.getString("latitude", "-34"));
+
+       // Log.d("TEEST", coords.toString());
+
+        Double latitude = Double.valueOf(coords[0]);
+        Double longidude = Double.valueOf(coords[1]);
+
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(latitude, longidude);
 

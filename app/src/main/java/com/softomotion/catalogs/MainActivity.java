@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         setSupportActionBar(binding.appBar.toolbar);
@@ -55,8 +56,12 @@ public class MainActivity extends AppCompatActivity  {
         binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                Intent intent = new Intent(MainActivity.this, MapActivity.class);
-                startActivity(intent);
+
+                if(menuItem.getItemId() == R.id.map){
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class);
+
+                    startActivity(intent);
+                }
                 return false;
             }
         });
@@ -68,6 +73,5 @@ public class MainActivity extends AppCompatActivity  {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
-
 
 }

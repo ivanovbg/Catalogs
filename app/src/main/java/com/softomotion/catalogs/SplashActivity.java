@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.softomotion.catalogs.data.DataManager;
 
 
 public class SplashActivity extends AppCompatActivity {
@@ -30,6 +31,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private Location mLocation = null;
 
+    private DataManager dataManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        dataManager = ((Catalogs) getApplication()).getDataManager();
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -184,9 +189,12 @@ public class SplashActivity extends AppCompatActivity {
 
             SharedPreferences sharedPref = getSharedPreferences("settings", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("latitude", String.valueOf(latitude));
-            editor.putString("longitude", String.valueOf(longitude));
-            editor.apply();
+
+            dataManager.putCoords( String.valueOf(latitude),  String.valueOf(longitude));
+
+//            editor.putString("latitude", String.valueOf(latitude));
+//            editor.putString("longitude", String.valueOf(longitude));
+//            editor.apply();
         }
 
         Intent nextScreen = new Intent(this, MainActivity.class);
