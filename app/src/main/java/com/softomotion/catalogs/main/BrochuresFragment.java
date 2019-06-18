@@ -1,4 +1,4 @@
-package com.softomotion.catalogs;
+package com.softomotion.catalogs.main;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import static com.softomotion.catalogs.FavouritesFragment.FRAGMENT;
+import com.softomotion.catalogs.R;
 
 
 /**

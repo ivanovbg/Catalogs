@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapActivity">
+        tools:context=".map.MapActivity">
 
         <include
             android:id="@+id/app_bar"
@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_bar"
-            tools:context=".MapActivity" />
+            tools:context=".map.MapActivity" />
 
 
         <include

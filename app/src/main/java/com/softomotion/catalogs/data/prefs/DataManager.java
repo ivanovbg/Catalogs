@@ -1,8 +1,6 @@
-package com.softomotion.catalogs.data;
+package com.softomotion.catalogs.data.prefs;
 
 import android.util.Log;
-
-import java.util.List;
 
 public class DataManager {
 
@@ -13,14 +11,19 @@ public class DataManager {
     }
 
     public void putCoords(String latitude, String longitude) {
-        Log.d("TEEST", "PUT COORDS");
         mSharedPrefsHelper.putCoords(latitude, longitude);
     }
 
     public String[] getCoords(){
-        Log.d("TEEST", "GET COORDS");
-        Log.d("TEEST", mSharedPrefsHelper.getCoords().toString());
         return mSharedPrefsHelper.getCoords();
+    }
+
+    public void putCityId(Integer city_id){
+        mSharedPrefsHelper.putCityId(city_id);
+    }
+
+    public  Integer getCityId(){
+        return mSharedPrefsHelper.getCityId();
     }
 }
 

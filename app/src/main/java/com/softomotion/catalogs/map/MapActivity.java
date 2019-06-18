@@ -1,12 +1,7 @@
-package com.softomotion.catalogs;
+package com.softomotion.catalogs.map;
 
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 
@@ -21,10 +16,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.softomotion.catalogs.data.DataManager;
+import com.softomotion.catalogs.Catalogs;
+import com.softomotion.catalogs.R;
+import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMapBinding;
-
-import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -36,7 +31,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_map);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

@@ -1,10 +1,13 @@
-package com.softomotion.catalogs;
+package com.softomotion.catalogs.utils;
 
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+
+import com.softomotion.catalogs.main.BrochuresFragment;
+import com.softomotion.catalogs.main.FavouritesFragment;
 
 public class Pager extends FragmentStatePagerAdapter {
 

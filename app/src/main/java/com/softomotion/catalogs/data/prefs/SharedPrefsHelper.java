@@ -1,4 +1,4 @@
-package com.softomotion.catalogs.data;
+package com.softomotion.catalogs.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,6 +19,14 @@ public class SharedPrefsHelper {
 
     public void putCoords(String latitude, String longitude){
          mSharedPreferences.edit().putString("latitude", latitude).putString("longitude", longitude).apply();
+    }
+
+    public void putCityId(Integer city_id){
+        mSharedPreferences.edit().putInt("city_id", city_id).apply();
+    }
+
+    public Integer getCityId(){
+        return mSharedPreferences.getInt("city_id", 0);
     }
 
     public String[] getCoords(){

@@ -1,4 +1,4 @@
-package com.softomotion.catalogs;
+package com.softomotion.catalogs.splash;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -19,7 +19,17 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.softomotion.catalogs.data.DataManager;
+import com.softomotion.catalogs.Catalogs;
+import com.softomotion.catalogs.main.MainActivity;
+import com.softomotion.catalogs.R;
+import com.softomotion.catalogs.data.api.models.closest_city.Response;
+import com.softomotion.catalogs.data.prefs.DataManager;
+import com.softomotion.catalogs.data.api.Api;
+
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 public class SplashActivity extends AppCompatActivity {
@@ -32,6 +42,9 @@ public class SplashActivity extends AppCompatActivity {
     private Location mLocation = null;
 
     private DataManager dataManager;
+    private Api api;
+
+    private Integer city_id = null;
 
 
     @Override
@@ -42,6 +55,7 @@ public class SplashActivity extends AppCompatActivity {
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         dataManager = ((Catalogs) getApplication()).getDataManager();
+        api = ((Catalogs)getApplication()).getApiManager();
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -178,7 +192,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void goHome(String text){
         if(mLocation == null){
-            Toast.makeText(this, "S grad sofiq be" + text, Toast.LENGTH_LONG).show();
+            openMainActivity();
         }else{
             //sad
             double latitude=mLocation.getLatitude();
@@ -192,9 +206,42 @@ public class SplashActivity extends AppCompatActivity {
 
             dataManager.putCoords( String.valueOf(latitude),  String.valueOf(longitude));
 
-//            editor.putString("latitude", String.valueOf(latitude));
-//            editor.putString("longitude", String.valueOf(longitude));
-//            editor.apply();
+            HashMap<String, String> coordinates = new HashMap<String, String>();
+            coordinates.put("latitude", String.valueOf(latitude));
+            coordinates.put("longitude", String.valueOf(longitude));
+
+
+            api.getCurrentCity(responseCallback, coordinates);
+        }
+//
+//        Intent nextScreen = new Intent(this, MainActivity.class);
+//        nextScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+//        startActivity(nextScreen);
+//        ActivityCompat.finishAffinity(this);
+    }
+
+
+    private Callback<Response> responseCallback = new Callback<Response>() {
+
+        @Override
+        public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+            if(response.isSuccessful() && response.body().getResponse() != null && response.body().getResponse().getCity() != null){
+                city_id = response.body().getResponse().getCity().getId();
+            }
+            Log.d("APP", response.body().getResponse().getCity().toString());
+            openMainActivity();
+        }
+
+        @Override
+        public void onFailure(Call<Response> call, Throwable t) {
+            openMainActivity();
+        }
+    };
+
+    private void openMainActivity(){
+        if(city_id != null){
+            dataManager.putCityId(city_id);
+            Log.d("APP", city_id.toString());
         }
 
         Intent nextScreen = new Intent(this, MainActivity.class);
