@@ -1,41 +1,24 @@
 package com.softomotion.catalogs.map;
 
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
 
+import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.google.maps.android.ui.IconGenerator;
 import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.data.api.Api;
@@ -44,12 +27,11 @@ import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMapBinding;
 import com.softomotion.catalogs.map.models.MapPin;
 import com.softomotion.catalogs.map.presenter.MapPresenter;
+import com.softomotion.catalogs.utils.MapPinRender;
 
-import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, MapView, ClusterManager.OnClusterClickListener<MapPin> {
 
@@ -121,7 +103,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void pinsReady(List<MapPin> pins) {
         mClusterManager = new ClusterManager<MapPin>(this, mMap);
-        mClusterManager.setRenderer(new MapPinRender());
+        mClusterManager.setRenderer(new MapPinRender(getApplicationContext(), mMap, mClusterManager));
         mClusterManager.addItems(pins);
 
         mMap.setOnCameraIdleListener(mClusterManager);
@@ -152,53 +134,4 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return true;
     }
 
-
-    private class MapPinRender extends DefaultClusterRenderer<MapPin> {
-        private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
-        private final ImageView mImageView;
-        private final int mDimension;
-        Bitmap icon;
-
-        MapPinRender() {
-            super(getApplicationContext(), mMap, mClusterManager);
-
-            mImageView = new ImageView(getApplicationContext());
-            mDimension = (int) getResources().getDimension(R.dimen.custom_profile_image);
-            mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
-            int padding = (int) getResources().getDimension(R.dimen.custom_profile_padding);
-            mImageView.setPadding(padding, padding, padding, padding);
-            mIconGenerator.setContentView(mImageView);
-        }
-
-        @Override
-        protected void onBeforeClusterItemRendered(MapPin pin, MarkerOptions markerOptions) {
-            icon = mIconGenerator.makeIcon();
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(pin.getTitle());
-
-        }
-
-        @Override
-        protected void onClusterItemRendered(MapPin clusterItem, final Marker marker) {
-            Log.d("API", clusterItem.getmImage());
-
-
-            Glide.with(getApplicationContext()).
-                    load(clusterItem.getmImage())
-                    .asBitmap()
-                    .fitCenter()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                            marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
-                        }
-                    });
-        }
-
-        @Override
-        protected boolean shouldRenderAsCluster(Cluster cluster) {
-            // Always render clusters.
-            return cluster.getSize() > 1;
-        }
-    }
 }
