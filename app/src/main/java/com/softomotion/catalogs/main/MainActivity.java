@@ -6,12 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -19,81 +15,58 @@ import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.data.api.Api;
 import com.softomotion.catalogs.data.api.models.cities.Cities;
 import com.softomotion.catalogs.main.adapters.CitiesAdapter;
+import com.softomotion.catalogs.main.presenter.MainPressenter;
 import com.softomotion.catalogs.map.MapActivity;
-import com.softomotion.catalogs.utils.Pager;
+import com.softomotion.catalogs.main.adapters.Pager;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMainBinding;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity implements MainView  {
     private ActivityMainBinding binding;
     private Pager pagerAdapter;
 
-    private DataManager dataManager;
 
+    private DataManager dataManager;
     private Api api;
 
+    private CitiesAdapter citiesAdapter;
+
+    private MainPressenter<MainActivity> mainPressenter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
         setSupportActionBar(binding.appBar.toolbar);
 
         pagerAdapter = new Pager(getSupportFragmentManager(), binding.tabLayout.getTabCount());
+        setupPager();
+
 
         dataManager  = ((Catalogs)getApplication()).getDataManager();
-
         api = ((Catalogs)getApplication()).getApiManager();
 
-        api.getCities(responseCallback);
+
+        mainPressenter = new MainPressenter<>(dataManager, api);
+        mainPressenter.onAttach(this);
+        mainPressenter.getCities();
 
 
-        binding.pager.setAdapter(pagerAdapter);
-        binding.tabLayout.setupWithViewPager(binding.pager);
-        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                binding.pager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-                if(menuItem.getItemId() == R.id.map){
-                    Intent intent = new Intent(MainActivity.this, MapActivity.class);
-
-                    startActivity(intent);
-                }
-                return false;
-            }
-        });
+        binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
     }
 
-
+    @Override
+    public void setupPager(){
+        binding.pager.setAdapter(pagerAdapter);
+        binding.tabLayout.setupWithViewPager(binding.pager);
+        binding.tabLayout.addOnTabSelectedListener(onTabSelectedListener);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,34 +74,39 @@ public class MainActivity extends AppCompatActivity  {
         return true;
     }
 
+    @Override
+    public void citiesReady(List<Cities> cities) {
+        citiesAdapter = new CitiesAdapter(this, cities);
+        binding.appBar.citiesList.setAdapter(citiesAdapter);
+        binding.appBar.citiesList.setSelection(citiesAdapter.getCityPosition(dataManager.getCityId()));
+    }
 
-    private Callback<List<Cities>> responseCallback = new Callback<List<Cities>>() {
+
+    private TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
         @Override
-        public void onResponse(Call<List<Cities>> call, Response<List<Cities>> response) {
-            Log.d("API", response.body().get(0).getName());
-
-            CitiesAdapter citiesAdapter = new CitiesAdapter(MainActivity.this, response.body());
-            binding.appBar.citiesList.setAdapter(citiesAdapter);
-            binding.appBar.citiesList.setSelection(citiesAdapter.getCityPosition(dataManager.getCityId()));
-
-            binding.appBar.citiesList.setOnItemSelectedListener(changeCityListener);
+        public void onTabSelected(TabLayout.Tab tab) {
+            binding.pager.setCurrentItem(tab.getPosition());
         }
 
         @Override
-        public void onFailure(Call<List<Cities>> call, Throwable t) {
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
 
         }
     };
 
-    private AdapterView.OnItemSelectedListener changeCityListener =  new AdapterView.OnItemSelectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(MainActivity.this, "YOU CHANGE CITY", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            if(menuItem.getItemId() == R.id.map){
+                Intent intent = new Intent(MainActivity.this, MapActivity.class);
+                startActivity(intent);
+            }
+            return false;
         }
     };
 
