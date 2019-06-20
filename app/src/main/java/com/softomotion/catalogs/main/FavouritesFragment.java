@@ -82,6 +82,12 @@ public class FavouritesFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("FavouriteFragment", "ONRESUME");
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
     }

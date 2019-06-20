@@ -20,11 +20,13 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.softomotion.catalogs.Catalogs;
+import com.softomotion.catalogs.Main2Activity;
 import com.softomotion.catalogs.main.MainActivity;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.data.api.models.closest_city.Response;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.data.api.Api;
+import com.softomotion.catalogs.utils.NetworkUtils;
 
 import java.util.HashMap;
 
@@ -46,6 +48,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private Integer city_id = null;
 
+    private boolean networkEnabled = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +61,27 @@ public class SplashActivity extends AppCompatActivity {
         dataManager = ((Catalogs) getApplication()).getDataManager();
         api = ((Catalogs)getApplication()).getApiManager();
 
-        if (!checkPermissions()) {
-            requestPermissions();
-        }else{
-            getLocation();
+        starter();
+
+    }
+
+
+    public void starter(){
+        if(!NetworkUtils.isNetworkConnected(this)){
+            networkEnabled = false;
+            showSnackbar(R.string.permission_rationale, android.R.string.ok,
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            starter();
+                        }
+                    });
+        }else {
+            if (!checkPermissions() && networkEnabled) {
+                requestPermissions();
+            } else if (networkEnabled) {
+                getLocation();
+            }
         }
     }
 
@@ -141,6 +162,7 @@ public class SplashActivity extends AppCompatActivity {
         }
         try {
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGPS, null);
+            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,0,locationListenerGPS);
         }catch (SecurityException e){
             Toast.makeText(SplashActivity.this, "ASA",Toast.LENGTH_LONG).show();
         }
@@ -171,7 +193,32 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void onLocationChanged(android.location.Location location) {
             mLocation = location;
+            Log.d("API", "API");
             goHome("location event");
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    LocationListener locationListenerGPSUpdate=new LocationListener() {
+        @Override
+        public void onLocationChanged(android.location.Location location) {
+            Log.d("API", location.toString());
+//            mLocation = location;
+//            goHome("location event");
         }
 
         @Override
@@ -243,11 +290,6 @@ public class SplashActivity extends AppCompatActivity {
             dataManager.putCityId(city_id);
             Log.d("APP", city_id.toString());
         }
-
-        Intent nextScreen = new Intent(this, MainActivity.class);
-        nextScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-        startActivity(nextScreen);
-        ActivityCompat.finishAffinity(this);
     }
 
 }

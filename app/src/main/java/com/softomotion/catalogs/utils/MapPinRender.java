@@ -2,7 +2,6 @@ package com.softomotion.catalogs.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -31,11 +30,8 @@ public class MapPinRender extends DefaultClusterRenderer<MapPin> {
 
    public MapPinRender(Context context, GoogleMap map, ClusterManager<MapPin> clusterManager) {
         super(context, map, clusterManager);
-
         mContext = context;
-
         mIconGenerator = new IconGenerator(context);
-
         mImageView = new ImageView(context);
         mDimension = (int) context.getResources().getDimension(R.dimen.custom_profile_image);
         mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
@@ -48,14 +44,10 @@ public class MapPinRender extends DefaultClusterRenderer<MapPin> {
     protected void onBeforeClusterItemRendered(MapPin pin, MarkerOptions markerOptions) {
         icon = mIconGenerator.makeIcon();
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(pin.getTitle());
-
     }
 
     @Override
     protected void onClusterItemRendered(MapPin clusterItem, final Marker marker) {
-        Log.d("API", clusterItem.getmImage());
-
-
         Glide.with(mContext).
                 load(clusterItem.getmImage())
                 .asBitmap()
@@ -71,7 +63,6 @@ public class MapPinRender extends DefaultClusterRenderer<MapPin> {
 
     @Override
     protected boolean shouldRenderAsCluster(Cluster cluster) {
-        // Always render clusters.
         return cluster.getSize() > 1;
     }
 }

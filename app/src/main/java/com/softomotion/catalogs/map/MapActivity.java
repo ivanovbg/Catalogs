@@ -15,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
@@ -39,11 +40,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ActivityMapBinding binding;
     private DataManager dataManager;
     private Api api;
-    private MapPresenter mapPresenter;
-    private HashMap<String, Double> worldCoordinates = new HashMap<>();
+    private MapPresenter<MapActivity> mapPresenter;
 
-    public static final LatLng WORLD_TOP_LEFT = new LatLng(85.0, -180.0);
-    public static final LatLng WORLD_BOTTOM_RIGHT = new LatLng(-85.0, 179.999999999);
+    private HashMap<String, Double> worldCoordinates = new HashMap<String, Double>(){{
+        put("top_left_lat", 85.0);
+        put("top_left_long", -180.0);
+        put("bottom_right_lat", -85.0);
+        put("bottom_right_long", 179.999999999);
+
+    }};
 
     private ClusterManager<MapPin> mClusterManager;
 
@@ -53,6 +58,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         setSupportActionBar(binding.appBar.toolbar);
@@ -60,18 +66,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         dataManager = ((Catalogs)getApplication()).getDataManager();
         api = ((Catalogs) getApplication()).getApiManager();
 
-        mapPresenter = new MapPresenter(dataManager, api);
+        mapPresenter = new MapPresenter<MapActivity>(dataManager, api);
         mapPresenter.onAttach(this);
 
-        worldCoordinates.put("top_left_lat", WORLD_TOP_LEFT.latitude);
-        worldCoordinates.put("top_left_long", WORLD_TOP_LEFT.longitude);
-        worldCoordinates.put("bottom_right_lat", WORLD_BOTTOM_RIGHT.latitude);
-        worldCoordinates.put("bottom_right_long", WORLD_BOTTOM_RIGHT.longitude);
 
-
-       binding.bottomNavigation.bottomNavigationView.setSelectedItemId(R.id.map);
-
-       binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(itemReselectedListener);
+        binding.bottomNavigation.bottomNavigationView.setSelectedItemId(R.id.map);
+        binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(itemReselectedListener);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener itemReselectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -97,6 +97,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(userCity));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userCity,14));
 
+        LatLng sydney = new LatLng(42.6791348, 23.3673909);
+        mMap.addMarker(new MarkerOptions().position(sydney)
+                .title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,16));
+
+        //load pins over map
         mapPresenter.getPins(worldCoordinates);
     }
 
@@ -115,22 +122,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public boolean onClusterClick(Cluster<MapPin> cluster) {
-        //Toast.makeText(this, cluster.getSize(), Toast.LENGTH_SHORT).show();
-
         LatLngBounds.Builder builder = LatLngBounds.builder();
+
         for (ClusterItem item : cluster.getItems()) {
             builder.include(item.getPosition());
         }
-        // Get the LatLngBounds
-        final LatLngBounds bounds = builder.build();
 
-        // Animate camera to the bounds
+        final LatLngBounds bounds = builder.build();
         try {
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return true;
     }
 
