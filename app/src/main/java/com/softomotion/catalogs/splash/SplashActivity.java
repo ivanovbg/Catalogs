@@ -260,11 +260,11 @@ public class SplashActivity extends AppCompatActivity {
 
             api.getCurrentCity(responseCallback, coordinates);
         }
-//
-//        Intent nextScreen = new Intent(this, MainActivity.class);
-//        nextScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-//        startActivity(nextScreen);
-//        ActivityCompat.finishAffinity(this);
+
+        Intent nextScreen = new Intent(this, MainActivity.class);
+        nextScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        startActivity(nextScreen);
+        ActivityCompat.finishAffinity(this);
     }
 
 
