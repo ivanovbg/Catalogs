@@ -1,17 +1,18 @@
 package com.softomotion.catalogs.map;
 
-
-
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,32 +20,43 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.R;
+import com.softomotion.catalogs.brochure.BrochureActivity;
+import com.softomotion.catalogs.core.adapters.BrochuresListAdapter;
+import com.softomotion.catalogs.core.adapters.BrochuresListHolder;
+import com.softomotion.catalogs.core.map.MapView;
 import com.softomotion.catalogs.data.api.Api;
+import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 import com.softomotion.catalogs.data.api.models.city.City;
+import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMapBinding;
 import com.softomotion.catalogs.map.models.MapPin;
-import com.softomotion.catalogs.map.presenter.MapPresenter;
+import com.softomotion.catalogs.core.map.presenter.MapPresenter;
 import com.softomotion.catalogs.utils.MapPinRender;
-
 
 import java.util.HashMap;
 import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, MapView, ClusterManager.OnClusterClickListener<MapPin>, ClusterManager.OnClusterItemClickListener<MapPin> {
 
+    public static final String TAG = "MAPACTIVITY";
     private GoogleMap mMap;
     private ActivityMapBinding binding;
     private DataManager dataManager;
     private Api api;
+    private DatabaseInstance db;
     private MapPresenter<MapActivity> mapPresenter;
+
+    private Dialog brochuresDialog;
+    private RecyclerView brochuresRecycleView;
+    private BrochuresListAdapter brochuresListAdapter;
+    private List<BrochuresItem> brs;
 
     private HashMap<String, Double> worldCoordinates = new HashMap<String, Double>(){{
         put("top_left_lat", 85.0);
@@ -69,14 +81,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         dataManager = ((Catalogs)getApplication()).getDataManager();
         api = ((Catalogs) getApplication()).getApiManager();
+        db = ((Catalogs) getApplication()).getDatabaseInstance();
 
-        mapPresenter = new MapPresenter<MapActivity>(dataManager, api);
+        mapPresenter = new MapPresenter<MapActivity>(dataManager, api, db);
         mapPresenter.onAttach(this);
 
 
         binding.bottomNavigation.bottomNavigationView.setSelectedItemId(R.id.map);
         binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(itemReselectedListener);
     }
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener itemReselectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -100,14 +114,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         LatLng userCity = new LatLng(city.getLat(), city.getlLong());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(userCity));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userCity,14));
-
-        LatLng sydney = new LatLng(42.6791348, 23.3673909);
-        mMap.addMarker(new MarkerOptions().position(sydney)
-                .title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,16));
-
-        //load pins over map
         mapPresenter.getPins(worldCoordinates);
     }
 
@@ -123,6 +129,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mClusterManager.setOnClusterClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);
+    }
+
+    @Override
+    public void loadBrochures(List<BrochuresItem> brochures) {
+        brs = brochures;
+        if(brochuresListAdapter == null){
+            brochuresListAdapter = new BrochuresListAdapter(this, brs, brochureItemClickListener);
+            brochuresRecycleView.setAdapter(brochuresListAdapter);
+        }else{
+            brochuresListAdapter.updateData(brochures);
+        }
+
+        brochuresDialog.findViewById(R.id.brochures_loader).setVisibility(View.GONE);
+
+        if(brochures.size() == 0){
+            brochuresDialog.findViewById(R.id.no_brochure_text_view).setVisibility(View.VISIBLE);
+        }else {
+            brochuresDialog.findViewById(R.id.brochureRecycleView).setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -145,10 +171,42 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public boolean onClusterItemClick(MapPin mapPin) {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.custom_brochures_popup);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
+        setupBrochureDialog();
+        Integer[] brands_filters = {mapPin.getmBrandId()};
+        mapPresenter.getBrochures(dataManager.getCityId(), brands_filters);
         return false;
     }
+
+    private void setupBrochureDialog(){
+        if(brochuresDialog == null){
+            brochuresDialog = new Dialog(this);
+
+            brochuresDialog.setContentView(R.layout.custom_brochures_popup);
+            brochuresRecycleView = brochuresDialog.findViewById(R.id.brochureRecycleView);
+            brochuresRecycleView.setLayoutManager(new GridLayoutManager(this, 2));
+            brochuresDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        }
+
+        brochuresDialog.findViewById(R.id.brochures_loader).setVisibility(View.VISIBLE);
+        brochuresDialog.findViewById(R.id.no_brochure_text_view).setVisibility(View.GONE);
+        brochuresDialog.findViewById(R.id.brochureRecycleView).setVisibility(View.GONE);
+
+        brochuresDialog.show();
+    }
+
+
+    private BrochuresListHolder.BrochureItemClickListener brochureItemClickListener = new BrochuresListHolder.BrochureItemClickListener() {
+        @Override
+        public void onBrochureClick(Integer brochure_id) {
+            Intent intent = new Intent(MapActivity.this, BrochureActivity.class);
+            intent.putExtra("brochure_id", brochure_id);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onBrochureLik(BrochuresItem brochuresItem, View itemView) {
+            Toast.makeText(MapActivity.this, "Like button pressed!", Toast.LENGTH_LONG).show();
+        }
+    };
+
 }

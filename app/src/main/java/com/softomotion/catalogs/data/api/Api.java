@@ -1,5 +1,7 @@
 package com.softomotion.catalogs.data.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.softomotion.catalogs.data.api.models.closest_city.Response;
 
 import java.util.HashMap;
@@ -22,6 +24,7 @@ public class Api {
     }
 
     private Api(){
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.broshura.bg/")
                 .addConverterFactory(GsonConverterFactory.create())

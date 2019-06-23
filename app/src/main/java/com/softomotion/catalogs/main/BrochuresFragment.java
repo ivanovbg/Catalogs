@@ -1,88 +1,80 @@
 package com.softomotion.catalogs.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.R;
+import com.softomotion.catalogs.brochure.BrochureActivity;
+import com.softomotion.catalogs.core.adapters.BrochuresListAdapter;
+import com.softomotion.catalogs.core.adapters.BrochuresListHolder;
+import com.softomotion.catalogs.core.main.BrochuresFragmentView;
+import com.softomotion.catalogs.core.main.presenter.BrochuresFragmentPresenter;
+import com.softomotion.catalogs.data.api.Api;
+import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
+import com.softomotion.catalogs.data.database.DatabaseInstance;
+import com.softomotion.catalogs.data.prefs.DataManager;
+import com.softomotion.catalogs.databinding.FragmentBrochuresBinding;
+import com.softomotion.catalogs.map.MapActivity;
 
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BrochuresFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BrochuresFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class BrochuresFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    public static final String FRAGMENT = "FRAGMENT";
+public class BrochuresFragment extends Fragment implements BrochuresFragmentView, MainActivity.brochuresFragmentListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private DataManager dataManager;
+    private Api api;
+    private DatabaseInstance db;
+    private BrochuresFragmentPresenter<BrochuresFragment> brochuresFragmentPresenter;
+    private FragmentBrochuresBinding binding;
+    private RecyclerView brochuresRecycleView;
+    private BrochuresListAdapter brochuresListAdapter;
 
-
-    public BrochuresFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BrochuresFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BrochuresFragment newInstance(String param1, String param2) {
+    public static BrochuresFragment newInstance() {
         BrochuresFragment fragment = new BrochuresFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        Catalogs catalogs = (Catalogs) getActivity().getApplication();
+        dataManager = catalogs.getDataManager();
+        api = catalogs.getApiManager();
+        db = catalogs.getDatabaseInstance();
+
+        brochuresFragmentPresenter = new BrochuresFragmentPresenter<>(dataManager, api, db);
+        brochuresFragmentPresenter.onAttach(this);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.d(FRAGMENT, "Brochures create");
-        return inflater.inflate(R.layout.fragment_brochures, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_brochures, container, false);
+        return binding.getRoot();
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
-
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        ((MainActivity) getActivity()).registerBrochuresFragmentListener(this);
     }
 
     @Override
@@ -90,4 +82,49 @@ public class BrochuresFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void loadBrochures(List<BrochuresItem> brochuresItems) {
+        binding.brochureRecycleView.brochureRecycleView.setVisibility(View.VISIBLE);
+        brochuresRecycleView = binding.brochureRecycleView.brochureRecycleView;
+        brochuresRecycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        brochuresListAdapter = new BrochuresListAdapter(getContext(), brochuresItems, brochureItemClickListener);
+        brochuresRecycleView.setAdapter(brochuresListAdapter);
+    }
+
+    private BrochuresListHolder.BrochureItemClickListener brochureItemClickListener = new BrochuresListHolder.BrochureItemClickListener() {
+        @Override
+        public void onBrochureClick(Integer brochure_id) {
+            Intent intent = new Intent(getActivity().getBaseContext(), BrochureActivity.class);
+            intent.putExtra("brochure_id", brochure_id);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onBrochureLik(BrochuresItem brochuresItem, View itemView) {
+            Toast.makeText(getActivity().getBaseContext(), "Like button pressed!", Toast.LENGTH_LONG).show();
+            if(itemView.findViewById(R.id.brochure_like_btn).isActivated()){
+                itemView.findViewById(R.id.brochure_like_btn).setActivated(false);
+                brochuresFragmentPresenter.unLikeBrochure(brochuresItem.getId());
+                ((MainActivity)getActivity()).favouritesFragmentListener.reloadData();
+                if(brochuresListAdapter.likeBrochures.contains(brochuresItem.getId())){
+                    brochuresListAdapter.likeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
+                }
+                brochuresListAdapter.unlikeBrochures.add(brochuresItem.getId());
+            }else{
+                brochuresFragmentPresenter.likeBrochure(brochuresItem);
+                itemView.findViewById(R.id.brochure_like_btn).setActivated(true);
+                ((MainActivity)getActivity()).favouritesFragmentListener.reloadData();
+                if(brochuresListAdapter.unlikeBrochures.contains(brochuresItem.getId())){
+                    brochuresListAdapter.unlikeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
+                }
+                brochuresListAdapter.likeBrochures.add(brochuresItem.getId());
+            }
+        }
+    };
+
+
+    @Override
+    public void reloadData() {
+        brochuresFragmentPresenter.getBrochures(dataManager.getCityId());
+    }
 }

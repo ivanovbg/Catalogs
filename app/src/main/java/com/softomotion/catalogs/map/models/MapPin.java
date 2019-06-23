@@ -9,26 +9,15 @@ public class MapPin implements ClusterItem {
     private String mTitle;
     private String mSnippet;
     private String mImage;
+    private int mBrandId;
 
-    public MapPin(double lat, double lng) {
-        mPosition = new LatLng(lat, lng);
-        mTitle = null;
-        mSnippet = null;
-    }
 
-    public MapPin(double lat, double lng, String title, String snippet, String image) {
-        mPosition = new LatLng(lat, lng);
-        mTitle = title;
-        mSnippet = snippet;
-        mImage = image;
-
-    }
-
-    public MapPin(LatLng location, String title, String snippet, String image) {
+    public MapPin(LatLng location, String title, String snippet, String image, int brandId) {
         mPosition = location;
         mTitle = title;
         mSnippet = snippet;
         mImage = image;
+        mBrandId = brandId;
     }
 
     @Override
@@ -42,18 +31,12 @@ public class MapPin implements ClusterItem {
 
     public String getSnippet() { return mSnippet; }
 
-    /**
-     * Set the title of the marker
-     * @param title string to be set as title
-     */
+
     public void setTitle(String title) {
         mTitle = title;
     }
 
-    /**
-     * Set the description of the marker
-     * @param snippet string to be set as snippet
-     */
+
     public void setSnippet(String snippet) {
         mSnippet = snippet;
     }
@@ -65,5 +48,13 @@ public class MapPin implements ClusterItem {
 
     public void setmImage(String mImage) {
         this.mImage = mImage;
+    }
+
+    public int getmBrandId() {
+        return mBrandId;
+    }
+
+    public void setmBrandId(int mBrandId) {
+        this.mBrandId = mBrandId;
     }
 }
