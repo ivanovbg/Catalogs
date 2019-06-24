@@ -27,6 +27,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.brochure.BrochureActivity;
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.core.adapters.BrochuresListAdapter;
 import com.softomotion.catalogs.core.adapters.BrochuresListHolder;
 import com.softomotion.catalogs.core.map.MapView;
@@ -36,8 +37,10 @@ import com.softomotion.catalogs.data.api.models.city.City;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMapBinding;
+import com.softomotion.catalogs.main.MainActivity;
 import com.softomotion.catalogs.map.models.MapPin;
 import com.softomotion.catalogs.core.map.presenter.MapPresenter;
+import com.softomotion.catalogs.utils.CommonUtils;
 import com.softomotion.catalogs.utils.MapPinRender;
 
 import java.util.HashMap;
@@ -45,7 +48,6 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, MapView, ClusterManager.OnClusterClickListener<MapPin>, ClusterManager.OnClusterItemClickListener<MapPin> {
 
-    public static final String TAG = "MAPACTIVITY";
     private GoogleMap mMap;
     private ActivityMapBinding binding;
     private DataManager dataManager;
@@ -56,15 +58,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Dialog brochuresDialog;
     private RecyclerView brochuresRecycleView;
     private BrochuresListAdapter brochuresListAdapter;
-    private List<BrochuresItem> brs;
 
-    private HashMap<String, Double> worldCoordinates = new HashMap<String, Double>(){{
-        put("top_left_lat", 85.0);
-        put("top_left_long", -180.0);
-        put("bottom_right_lat", -85.0);
-        put("bottom_right_long", 179.999999999);
 
-    }};
 
     private ClusterManager<MapPin> mClusterManager;
 
@@ -110,15 +105,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void cityReady(City city){
+    public void showCity(City city){
         LatLng userCity = new LatLng(city.getLat(), city.getlLong());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(userCity));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userCity,14));
-        mapPresenter.getPins(worldCoordinates);
+        mapPresenter.getPins(AppConsts.WORLD_COORDINATES);
     }
 
     @Override
-    public void pinsReady(List<MapPin> pins) {
+    public void showPins(List<MapPin> pins) {
         mClusterManager = new ClusterManager<MapPin>(this, mMap);
         mClusterManager.setRenderer(new MapPinRender(getApplicationContext(), mMap, mClusterManager));
         mClusterManager.addItems(pins);
@@ -132,22 +127,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void loadBrochures(List<BrochuresItem> brochures) {
-        brs = brochures;
+    public void showBrochures(List<BrochuresItem> brochures, List<Integer> likedBrochures) {
         if(brochuresListAdapter == null){
-            brochuresListAdapter = new BrochuresListAdapter(this, brs, brochureItemClickListener);
+            brochuresListAdapter = new BrochuresListAdapter(this, brochures, brochureItemClickListener);
             brochuresRecycleView.setAdapter(brochuresListAdapter);
         }else{
             brochuresListAdapter.updateData(brochures);
         }
 
-        brochuresDialog.findViewById(R.id.brochures_loader).setVisibility(View.GONE);
+        brochuresListAdapter.likeBrochures = likedBrochures;
+
+        brochuresDialog.findViewById(R.id.progress_overlay).setVisibility(View.GONE);
 
         if(brochures.size() == 0){
             brochuresDialog.findViewById(R.id.no_brochure_text_view).setVisibility(View.VISIBLE);
         }else {
             brochuresDialog.findViewById(R.id.brochureRecycleView).setVisibility(View.VISIBLE);
         }
+
 
     }
 
@@ -180,14 +177,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void setupBrochureDialog(){
         if(brochuresDialog == null){
             brochuresDialog = new Dialog(this);
-
             brochuresDialog.setContentView(R.layout.custom_brochures_popup);
             brochuresRecycleView = brochuresDialog.findViewById(R.id.brochureRecycleView);
             brochuresRecycleView.setLayoutManager(new GridLayoutManager(this, 2));
             brochuresDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         }
 
-        brochuresDialog.findViewById(R.id.brochures_loader).setVisibility(View.VISIBLE);
+        brochuresDialog.findViewById(R.id.progress_overlay).setVisibility(View.VISIBLE);
         brochuresDialog.findViewById(R.id.no_brochure_text_view).setVisibility(View.GONE);
         brochuresDialog.findViewById(R.id.brochureRecycleView).setVisibility(View.GONE);
 
@@ -205,7 +201,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         @Override
         public void onBrochureLik(BrochuresItem brochuresItem, View itemView) {
-            Toast.makeText(MapActivity.this, "Like button pressed!", Toast.LENGTH_LONG).show();
+            if(itemView.findViewById(R.id.brochure_like_btn).isActivated()){
+                itemView.findViewById(R.id.brochure_like_btn).setActivated(false);
+                mapPresenter.unLikeBrochure(brochuresItem.getId());
+                if(brochuresListAdapter.likeBrochures.contains(brochuresItem.getId())){
+                    brochuresListAdapter.likeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
+                }
+                brochuresListAdapter.unlikeBrochures.add(brochuresItem.getId());
+            }else{
+                mapPresenter.likeBrochure(brochuresItem);
+                itemView.findViewById(R.id.brochure_like_btn).setActivated(true);
+                if(brochuresListAdapter.unlikeBrochures.contains(brochuresItem.getId())){
+                    brochuresListAdapter.unlikeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
+                }
+                brochuresListAdapter.likeBrochures.add(brochuresItem.getId());
+            }
         }
     };
 

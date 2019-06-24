@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.softomotion.catalogs.R;
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 
@@ -43,7 +44,7 @@ public class BrochuresListFavouritesAdapter extends RecyclerView.Adapter<Recycle
         BrochuresListFavouritesHolder hol = (BrochuresListFavouritesHolder) holder;
 
         Glide.with(context)
-                .load("https://static.broshura.bg/img/" + brochures.get(position).getBrochure_image())
+                .load(AppConsts.STATIC_DOMAIN + brochures.get(position).getBrochure_image())
                 .error(R.drawable.ic_launcher_background)
                 .into(hol.brochure_image)
         ;
@@ -51,6 +52,7 @@ public class BrochuresListFavouritesAdapter extends RecyclerView.Adapter<Recycle
 
         hol.setBrochureId(brochures.get(position));
         hol.likeBtn.setActivated(true);
+        hol.brand_name.setText(brochures.get(position).getBrochure_name());
     }
 
     @Override

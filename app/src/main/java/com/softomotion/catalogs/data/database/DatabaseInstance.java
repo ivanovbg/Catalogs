@@ -6,15 +6,16 @@ import android.os.AsyncTask;
 
 import androidx.room.Room;
 
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseInstance {
 
     private final AppDatabase db;
     private static DatabaseInstance instance;
-    private Context context;
 
     public static DatabaseInstance getInstance(Context context) {
         if(instance == null) {
@@ -25,9 +26,8 @@ public class DatabaseInstance {
 
     private DatabaseInstance(Context context) {
         db = Room
-                .databaseBuilder(context, AppDatabase.class, "brochures.db")
+                .databaseBuilder(context, AppDatabase.class, AppConsts.DATABASE_NAME)
                 .build();
-        this.context = context;
     }
 
 
@@ -62,6 +62,22 @@ public class DatabaseInstance {
 
             @Override
             protected void onPostExecute(List<Brochure> brochures) {
+                super.onPostExecute(brochures);
+                callback.onFavouriteBrochuresLoaded(brochures);
+            }
+        }.execute();
+    }
+
+    public void getLikedBrochures(DatabaseListener<List<Integer>> callback){
+        new AsyncTask<Void, Void, List<Integer>>() {
+            @Override
+            protected List<Integer> doInBackground(Void... voids) {
+                List<Integer> brochures = db.brochureDao().likedBrochures();
+                return brochures;
+            }
+
+            @Override
+            protected void onPostExecute(List<Integer> brochures) {
                 super.onPostExecute(brochures);
                 callback.onFavouriteBrochuresLoaded(brochures);
             }

@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.softomotion.catalogs.R;
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 
 import java.util.ArrayList;
@@ -20,13 +22,19 @@ public class BrochuresListAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Context context;
     private List<BrochuresItem> brochures;
     private BrochuresListHolder.BrochureItemClickListener brochureItemClickListener;
-    public ArrayList<Integer> likeBrochures = new ArrayList<>();
-    public ArrayList<Integer> unlikeBrochures = new ArrayList<>();
+    public List<Integer> likeBrochures = new ArrayList<>();
+    public List<Integer> unlikeBrochures = new ArrayList<>();
+    CircularProgressDrawable circularProgressDrawable;
 
     public BrochuresListAdapter(Context context, List<BrochuresItem> brochures, BrochuresListHolder.BrochureItemClickListener brochureItemClickListener){
         this.brochures = brochures;
         this.context = context;
         this.brochureItemClickListener = brochureItemClickListener;
+
+        circularProgressDrawable = new CircularProgressDrawable(context);
+        circularProgressDrawable.setStrokeWidth(5f);
+        circularProgressDrawable.setCenterRadius(30f);
+        circularProgressDrawable.start();
     }
 
 
@@ -43,12 +51,14 @@ public class BrochuresListAdapter extends RecyclerView.Adapter<RecyclerView.View
         BrochuresListHolder hol = (BrochuresListHolder) holder;
 
         Glide.with(context)
-                .load("https://static.broshura.bg/img/" + brochures.get(position).getPages().get(0).getImage().getMedium())
+                .load(AppConsts.STATIC_DOMAIN + brochures.get(position).getPages().get(0).getImage().getMedium())
                 .error(R.drawable.ic_launcher_background)
+                .placeholder(circularProgressDrawable)
                 .into(hol.brochure_image)
         ;
 
         hol.setBrochureId(brochures.get(position));
+        hol.brand_name.setText(brochures.get(position).getBrand().getName());
 
         if(brochures.get(position).isIsLiked() || likeBrochures.contains(brochures.get(position).getId())){
             hol.likeBtn.setActivated(true);

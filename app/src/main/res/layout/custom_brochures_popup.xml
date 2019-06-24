@@ -9,11 +9,9 @@
         android:orientation="vertical">
 
 
-        <ProgressBar
-            android:id="@+id/brochures_loader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+        <include
+            android:id="@+id/progress_overlay"
+            layout="@layout/progress_overlay" />
 
 
         <include

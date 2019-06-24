@@ -7,10 +7,10 @@ import com.google.gson.annotations.SerializedName;
 public class Validity{
 
 	@SerializedName("start")
-	private int start;
+	private long start;
 
 	@SerializedName("end")
-	private int end;
+	private long end;
 
 	@SerializedName("expires_in")
 	private int expiresIn;
@@ -19,7 +19,7 @@ public class Validity{
 		this.start = start;
 	}
 
-	public int getStart(){
+	public long getStart(){
 		return start;
 	}
 
@@ -27,7 +27,7 @@ public class Validity{
 		this.end = end;
 	}
 
-	public int getEnd(){
+	public long getEnd(){
 		return end;
 	}
 

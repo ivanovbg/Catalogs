@@ -8,7 +8,7 @@ import com.softomotion.catalogs.map.models.MapPin;
 import java.util.List;
 
 public interface MapView extends View {
-    void cityReady(City city);
-    void pinsReady(List<MapPin> pins);
-    void loadBrochures(List<BrochuresItem> brochures);
+    void showCity(City city);
+    void showPins(List<MapPin> pins);
+    void showBrochures(List<BrochuresItem> brochures, List<Integer> likedBrochures);
 }

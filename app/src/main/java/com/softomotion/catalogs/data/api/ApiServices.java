@@ -1,5 +1,6 @@
 package com.softomotion.catalogs.data.api;
 
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.api.models.cities.Cities;
 import com.softomotion.catalogs.data.api.models.city.City;
 import com.softomotion.catalogs.data.api.models.closest_city.Response;
@@ -16,24 +17,24 @@ import retrofit2.http.QueryMap;
 
 public interface ApiServices {
 
-    @GET("/closest_city")
+    @GET(AppConsts.API_CITY_PATH)
     Call<Response> closest_city(@HeaderMap Map<String, String> headers);
 
-    @GET("/cities")
+    @GET(AppConsts.API_CITIES_PATH)
     Call <List<Cities>> cities();
 
-    @GET("/cities")
+    @GET(AppConsts.API_CITIES_PATH)
     Call <List<City>> city(@Query("id") Integer city_id);
 
-    @GET("/get_map_pins")
+    @GET(AppConsts.API_PINS_PATH)
     Call<com.softomotion.catalogs.data.api.models.pins.Response> pins(@QueryMap Map<String, Double> coordinates, @Query("city_id") Integer city_id);
 
-    @GET("/city_index")
+    @GET(AppConsts.API_BROCHURES_PATH)
     Call<com.softomotion.catalogs.data.api.models.brochures.Response> getBrandBrochures(@Query("city_id") Integer city_id, @Query("brand_filters[]") Integer brands[]);
 
-    @GET("/city_index")
+    @GET(AppConsts.API_BROCHURES_PATH)
     Call<com.softomotion.catalogs.data.api.models.brochures.Response> getBrochures(@Query("city_id") Integer city_id);
 
-    @GET("/brochure_view")
+    @GET(AppConsts.API_BROCHURE_PATH)
     Call<com.softomotion.catalogs.data.api.models.brochure.Response> getBrochure(@Query("brochure_id") Integer brochure_id);
 }

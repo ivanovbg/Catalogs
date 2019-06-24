@@ -3,25 +3,26 @@ package com.softomotion.catalogs.core.adapters;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.softomotion.catalogs.R;
-import com.softomotion.catalogs.data.api.models.brochure.Brochure;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 
-import java.util.ArrayList;
 
 public class BrochuresListHolder extends  RecyclerView.ViewHolder{
     public ImageView brochure_image;
     public ImageButton likeBtn;
     private BrochuresItem brochure;
+    public TextView brand_name;
 
     public BrochuresListHolder(@NonNull View itemView, BrochureItemClickListener brochureItemClickListener) {
         super(itemView);
         this.brochure_image = itemView.findViewById(R.id.brochure_image);
         this.likeBtn = itemView.findViewById(R.id.brochure_like_btn);
+        this.brand_name = itemView.findViewById(R.id.brand_name);
 
         this.brochure_image.setOnClickListener(new View.OnClickListener() {
             @Override

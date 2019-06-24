@@ -14,7 +14,9 @@ import com.softomotion.catalogs.core.adapters.BrochureImagesAdapter;
 import com.softomotion.catalogs.core.brochure.BrochureView;
 import com.softomotion.catalogs.core.brochure.presenter.BrochurePresenter;
 import com.softomotion.catalogs.data.api.Api;
+import com.softomotion.catalogs.data.api.models.brochure.Brochure;
 import com.softomotion.catalogs.data.api.models.brochure.PagesItem;
+import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityBrochureBinding;
@@ -49,13 +51,16 @@ public class BrochureActivity extends AppCompatActivity implements BrochureView 
 
 
     @Override
-    public void loadBrochure(List<PagesItem> pages) {
+    public void loadBrochure(Brochure brochure) {
+
+        getSupportActionBar().setSubtitle(brochure.getBrand().getName() + " до " + CommonUtils.convertDate(brochure.getValidity().getEnd()));
+
         CommonUtils.animateView(binding.progressOverlay.progressOverlay, View.GONE, 0.4f, 200);
         LinearLayoutManager layout  = new LinearLayoutManager(BrochureActivity.this, LinearLayoutManager.HORIZONTAL, false);
         binding.brochureImageView.setLayoutManager(layout);
         LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
         linearSnapHelper.attachToRecyclerView(binding.brochureImageView);
-        BrochureImagesAdapter mAdapter = new BrochureImagesAdapter(this, pages);
+        BrochureImagesAdapter mAdapter = new BrochureImagesAdapter(this, brochure.getPages());
         binding.brochureImageView.setAdapter(mAdapter);
     }
 

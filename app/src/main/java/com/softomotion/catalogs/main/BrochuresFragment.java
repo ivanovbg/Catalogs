@@ -31,7 +31,9 @@ import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.FragmentBrochuresBinding;
 import com.softomotion.catalogs.map.MapActivity;
+import com.softomotion.catalogs.utils.CommonUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -67,6 +69,10 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_brochures, container, false);
+        binding.brochureRecycleView.brochureRecycleView.setVisibility(View.VISIBLE);
+        brochuresRecycleView = binding.brochureRecycleView.brochureRecycleView;
+        brochuresRecycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
         return binding.getRoot();
     }
 
@@ -83,12 +89,24 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
     }
 
     @Override
-    public void loadBrochures(List<BrochuresItem> brochuresItems) {
-        binding.brochureRecycleView.brochureRecycleView.setVisibility(View.VISIBLE);
-        brochuresRecycleView = binding.brochureRecycleView.brochureRecycleView;
-        brochuresRecycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        brochuresListAdapter = new BrochuresListAdapter(getContext(), brochuresItems, brochureItemClickListener);
-        brochuresRecycleView.setAdapter(brochuresListAdapter);
+    public void onResume(){
+        super.onResume();
+        if(brochuresListAdapter != null) {
+            reloadData();
+        }
+    }
+
+    @Override
+    public void loadBrochures(List<BrochuresItem> brochuresItems, List<Integer> likeBrochures) {
+        CommonUtils.animateView(binding.progressOverlay.progressOverlay, View.GONE, 0.4f, 200);
+
+        if(brochuresListAdapter == null) {
+            brochuresListAdapter = new BrochuresListAdapter(getContext(), brochuresItems, brochureItemClickListener);
+            brochuresRecycleView.setAdapter(brochuresListAdapter);
+        }else{
+            brochuresListAdapter.updateData(brochuresItems);
+        }
+        brochuresListAdapter.likeBrochures = likeBrochures;
     }
 
     private BrochuresListHolder.BrochureItemClickListener brochureItemClickListener = new BrochuresListHolder.BrochureItemClickListener() {
@@ -101,7 +119,6 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
 
         @Override
         public void onBrochureLik(BrochuresItem brochuresItem, View itemView) {
-            Toast.makeText(getActivity().getBaseContext(), "Like button pressed!", Toast.LENGTH_LONG).show();
             if(itemView.findViewById(R.id.brochure_like_btn).isActivated()){
                 itemView.findViewById(R.id.brochure_like_btn).setActivated(false);
                 brochuresFragmentPresenter.unLikeBrochure(brochuresItem.getId());
@@ -125,6 +142,7 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
 
     @Override
     public void reloadData() {
+        CommonUtils.animateView(binding.progressOverlay.progressOverlay, View.VISIBLE, 0.4f, 200);
         brochuresFragmentPresenter.getBrochures(dataManager.getCityId());
     }
 }

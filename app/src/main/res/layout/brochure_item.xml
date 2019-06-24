@@ -5,40 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="7dp"
+    android:background="@drawable/brochure_item_background"
     android:elevation="7dp"
     app:cardCornerRadius="0dp"
-    android:background="@drawable/brochure_item_background"
     app:cardPreventCornerOverlap="false">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/brand_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"/>
 
         <ImageView
             android:id="@+id/brochure_image"
+            android:layout_below="@+id/brand_name"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:scaleType="fitCenter"
-            />
-
-        <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/brochure_image"-->
-            <!--android:src="@drawable/brochure_like_selector"-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:tint="@android:color/darker_gray"-->
-            <!--/>-->
+            android:scaleType="fitCenter" />
 
         <ImageButton
             android:id="@+id/brochure_like_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/brochure_image"
-            android:src="@drawable/brochure_like_selector"
+            android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_alignParentEnd="true"/>
+            android:src="@drawable/brochure_like_selector" />
 
     </RelativeLayout>
 

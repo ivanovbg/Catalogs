@@ -62,8 +62,8 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourites, container, false);
-        favouritesFragmentPresenter.getBrochures();
 
+        favouritesFragmentPresenter.getBrochures();
         binding.brochureRecycleView.brochureRecycleView.setVisibility(View.VISIBLE);
         brochuresRecycleView = binding.brochureRecycleView.brochureRecycleView;
         brochuresRecycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -76,6 +76,15 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
     public void onAttach(Context context) {
         super.onAttach(context);
         ((MainActivity)getActivity()).registerFavouriteFragmentListener(this);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if(brochuresListFavouritesAdapter != null){
+            reloadData();
+        }
     }
 
     @Override
@@ -114,6 +123,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
         @Override
         public void onBrochureLik(Brochure brochuresItem, View itemView) {
             favouritesFragmentPresenter.unLikeBrochure(brochuresItem.getBrochure_id());
+            ((MainActivity)getActivity()).brochuresFragmentListener.reloadData();
         }
     };
 }

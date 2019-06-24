@@ -21,4 +21,8 @@
     <string name="permission_denied_explanation">Permission was denied, but is needed for core
         functionality.</string>
     <string name="settings">Settings</string>
+    <string name="brochures">Брошури</string>
+    <string name="favourites">Любими</string>
+    <string name="home">Начало</string>
+    <string name="map">Карта</string>
 </resources>

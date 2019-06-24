@@ -1,9 +1,5 @@
 package com.softomotion.catalogs.core.main.presenter;
 
-import android.os.Handler;
-import android.os.SystemClock;
-import android.util.Log;
-
 import com.softomotion.catalogs.core.base.BasePresenter;
 import com.softomotion.catalogs.core.main.BrochuresFragmentView;
 import com.softomotion.catalogs.data.api.Api;
@@ -13,7 +9,6 @@ import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 import com.softomotion.catalogs.data.prefs.DataManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,7 +24,7 @@ public class BrochuresFragmentPresenter  <V extends BrochuresFragmentView> exten
         getApi().getServices().getBrochures(city_id).enqueue(new Callback<Response>() {
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                lastBrochures(response.body().getResponse().getBrochures());
+                responseBrochures(response.body().getResponse().getBrochures());
             }
 
             @Override
@@ -39,39 +34,21 @@ public class BrochuresFragmentPresenter  <V extends BrochuresFragmentView> exten
         });
     }
 
-    public void lastBrochures(List<BrochuresItem> brochuresItems){
-        ArrayList<Integer> likeBrochures = new ArrayList<>();
-
-        getDb().getFavouritesBrochures(new DatabaseInstance.DatabaseListener<List<Brochure>>() {
+    private void responseBrochures(List<BrochuresItem> brochuresItems){
+        getDb().getLikedBrochures(new DatabaseInstance.DatabaseListener<List<Integer>>() {
             @Override
-            public void onFavouriteBrochuresLoaded(List<Brochure> data) {
-                    if(data.size()>0) {
-                        for (int i = 0; i < data.size(); i++) {
-                            likeBrochures.add(data.get(i).getBrochure_id());
-                        }
-                    }
-
-                    for(int b=0; b<brochuresItems.size(); b++){
-                        if(likeBrochures.contains(brochuresItems.get(b).getId())){
-                            brochuresItems.get(b).setIsLiked(true);
-                        }
-                    }
-                    getmView().loadBrochures(brochuresItems);
-
+            public void onFavouriteBrochuresLoaded(List<Integer> data) {
+                getmView().loadBrochures(brochuresItems, data);
             }
         });
     }
-
-
-
 
     @Override
     public void likeBrochure(BrochuresItem brochuresItem) {
         Brochure brochure = new Brochure();
         brochure.setBrochure_id(brochuresItem.getId());
-        brochure.setBrochure_name(brochuresItem.getHeading());
+        brochure.setBrochure_name(brochuresItem.getBrand().getName());
         brochure.setBrochure_image(brochuresItem.getPages().get(0).getImage().getMedium());
-
         getDb().likeBrochure(brochure);
     }
 

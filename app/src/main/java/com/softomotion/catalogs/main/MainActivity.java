@@ -3,7 +3,9 @@ package com.softomotion.catalogs.main;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,13 +38,14 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private DatabaseInstance db;
     private CitiesAdapter citiesAdapter;
     private MainPresenter<MainActivity> mainPressenter;
-    private brochuresFragmentListener brochuresFragmentListener;
+    public brochuresFragmentListener brochuresFragmentListener;
     public favouritesFragmentListener favouritesFragmentListener;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setSupportActionBar(binding.appBar.toolbar);
 
@@ -87,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 dataManager.putCityId(cities.get(position).getId());
                 brochuresFragmentListener.reloadData();
-
             }
 
             @Override

@@ -2,6 +2,7 @@ package com.softomotion.catalogs.data.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.api.models.closest_city.Response;
 
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class Api {
     private Api(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.broshura.bg/")
+                .baseUrl(AppConsts.API_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -41,11 +42,9 @@ public class Api {
         Call<Response> call = this.api.closest_city(headers);
         call.enqueue(responseCallback);
     }
-    //
-    //    public void getCities(Callback<List<Cities>> responseCallback){
-    //        Call<List<Cities>> call = this.api.cities();
-    //        call.enqueue(responseCallback);
-    //    }
+
+
+
 
 }
 

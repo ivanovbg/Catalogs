@@ -30,4 +30,8 @@ public class CommonUtils {
                     }
                 });
     }
+
+    public static String convertDate(long time){
+        return new java.text.SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date(time*1000));
+    }
 }

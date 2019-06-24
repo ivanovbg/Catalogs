@@ -1,7 +1,5 @@
 package com.softomotion.catalogs.core.brochure.presenter;
 
-import android.util.Log;
-
 import com.softomotion.catalogs.core.base.BasePresenter;
 import com.softomotion.catalogs.core.brochure.BrochureView;
 import com.softomotion.catalogs.data.api.Api;
@@ -23,7 +21,7 @@ public class BrochurePresenter <V extends BrochureView> extends BasePresenter<V>
         getApi().getServices().getBrochure(brochure_id).enqueue(new Callback<Response>() {
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                getmView().loadBrochure(response.body().getResponse().getBrochure().getPages());
+                getmView().loadBrochure(response.body().getResponse().getBrochure());
             }
 
             @Override
