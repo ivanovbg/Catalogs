@@ -6,12 +6,13 @@
     </data>
 
     <FrameLayout
-        android:id="@+id/progress_overlay"
+        android:id="@+id/custom_progress_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.4"
         android:animateLayoutChanges="true"
         android:background="@android:color/transparent"
+        android:visibility="gone"
         android:clickable="true">
 
         <ProgressBar

@@ -17,14 +17,6 @@
         <include
             layout="@layout/brochures_recycle_view"/>
 
-        <!--<androidx.recyclerview.widget.RecyclerView-->
-            <!--android:id="@+id/brochureRecycleView"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_margin="10dp"-->
-            <!--android:visibility="gone"-->
-            <!--android:layout_height="wrap_content">-->
-
-        <!--</androidx.recyclerview.widget.RecyclerView>-->
 
 
         <TextView

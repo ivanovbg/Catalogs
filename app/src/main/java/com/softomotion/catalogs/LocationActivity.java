@@ -1,8 +1,9 @@
-package com.softomotion.catalogs.splash;
+package com.softomotion.catalogs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -32,22 +33,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.softomotion.catalogs.Catalogs;
-import com.softomotion.catalogs.core.splash.SplashView;
-import com.softomotion.catalogs.core.splash.presenter.SplashPresenter;
-import com.softomotion.catalogs.data.database.DatabaseInstance;
+import com.softomotion.catalogs.data.api.models.closest_city.Response;
 import com.softomotion.catalogs.main.MainActivity;
-import com.softomotion.catalogs.R;
-import com.softomotion.catalogs.data.prefs.DataManager;
-import com.softomotion.catalogs.data.api.Api;
 
-import java.util.HashMap;
+import retrofit2.Call;
+import retrofit2.Callback;
 
-public class SplashActivity extends AppCompatActivity implements SplashView {
-
-    private DataManager dataManager;
-    private Api api;
-    private DatabaseInstance db;
+public class LocationActivity extends AppCompatActivity {
 
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
@@ -61,20 +53,11 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     private Location mCurrentLocation;
     private Boolean mRequestingLocationUpdates;
 
-    private SplashPresenter splashPresenter;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_location);
 
-        dataManager = ((Catalogs) getApplication()).getDataManager();
-        api = ((Catalogs)getApplication()).getApiManager();
-        db = ((Catalogs)getApplication()).getDatabaseInstance();
-
-
-        splashPresenter = new SplashPresenter(dataManager, api, db);
 
         init();
 
@@ -83,7 +66,9 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
         }else{
             startLocationUpdates();
         }
+
     }
+
 
     private void init() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -136,7 +121,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     }
 
     private void startLocationPermissionRequest() {
-        ActivityCompat.requestPermissions(SplashActivity.this,
+        ActivityCompat.requestPermissions(LocationActivity.this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 REQUEST_PERMISSIONS_REQUEST_CODE);
     }
@@ -153,10 +138,12 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            Log.d("API", String.valueOf(grantResults.length));
             if(grantResults.length <= 0 || grantResults[0] == PackageManager.PERMISSION_DENIED){
                 redirectToHome();
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startLocationUpdates();
+                mRequestingLocationUpdates = true;
             }
         }
     }
@@ -169,7 +156,6 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
                     @SuppressLint("MissingPermission")
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        mRequestingLocationUpdates = true;
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                     }
                 })
@@ -185,7 +171,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     ResolvableApiException rae = (ResolvableApiException) e;
-                                    rae.startResolutionForResult(SplashActivity.this, REQUEST_CHECK_SETTINGS);
+                                    rae.startResolutionForResult(LocationActivity.this, REQUEST_CHECK_SETTINGS);
                                 } catch (IntentSender.SendIntentException sie) {
                                     Log.i("API", "PendingIntent unable to execute request.");
                                 }
@@ -195,7 +181,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
                                         "fixed here. Fix in Settings.";
                                 Log.e("API", errorMessage);
 
-                                Toast.makeText(SplashActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                                Toast.makeText(LocationActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -220,6 +206,10 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
         }
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
 
     @Override
     protected void onPause(){
@@ -231,21 +221,23 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     }
 
     public void stopLocationUpdates() {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        mFusedLocationClient
+                .removeLocationUpdates(mLocationCallback)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void redirectToHome(){
         if(mCurrentLocation != null){
-            HashMap<String, String> coordinates = new HashMap<String, String>();
-            coordinates.put("latitude", String.valueOf(mCurrentLocation.getLatitude()));
-            coordinates.put("longitude", String.valueOf(mCurrentLocation.getLongitude()));
-            splashPresenter.findCity(coordinates);
+            Toast.makeText(this, "Go home with" + mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
         }
-
         Intent nextScreen = new Intent(this, MainActivity.class);
         nextScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         startActivity(nextScreen);
         ActivityCompat.finishAffinity(this);
     }
-
 }

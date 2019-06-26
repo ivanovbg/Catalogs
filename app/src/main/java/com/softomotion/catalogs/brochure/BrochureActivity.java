@@ -45,7 +45,7 @@ public class BrochureActivity extends AppCompatActivity implements BrochureView 
         brochurePresenter.onAttach(this);
         brochureId = getIntent().getExtras().getInt("brochure_id");
 
-        CommonUtils.animateView(binding.progressOverlay.progressOverlay, View.VISIBLE, 0.4f, 200);
+        CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.VISIBLE, 0.4f, 200);
         brochurePresenter.getBrochure(brochureId);
     }
 
@@ -55,7 +55,7 @@ public class BrochureActivity extends AppCompatActivity implements BrochureView 
 
         getSupportActionBar().setSubtitle(brochure.getBrand().getName() + " до " + CommonUtils.convertDate(brochure.getValidity().getEnd()));
 
-        CommonUtils.animateView(binding.progressOverlay.progressOverlay, View.GONE, 0.4f, 200);
+        CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
         LinearLayoutManager layout  = new LinearLayoutManager(BrochureActivity.this, LinearLayoutManager.HORIZONTAL, false);
         binding.brochureImageView.setLayoutManager(layout);
         LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();

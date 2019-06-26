@@ -98,7 +98,7 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
 
     @Override
     public void loadBrochures(List<BrochuresItem> brochuresItems, List<Integer> likeBrochures) {
-        CommonUtils.animateView(binding.progressOverlay.progressOverlay, View.GONE, 0.4f, 200);
+        CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
 
         if(brochuresListAdapter == null) {
             brochuresListAdapter = new BrochuresListAdapter(getContext(), brochuresItems, brochureItemClickListener);
@@ -142,7 +142,7 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
 
     @Override
     public void reloadData() {
-        CommonUtils.animateView(binding.progressOverlay.progressOverlay, View.VISIBLE, 0.4f, 200);
+        CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.VISIBLE, 0.4f, 200);
         brochuresFragmentPresenter.getBrochures(dataManager.getCityId());
     }
 }

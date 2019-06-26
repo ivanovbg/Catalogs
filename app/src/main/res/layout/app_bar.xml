@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:elevation="0dp"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
         app:subtitleTextColor="@android:color/white"
         app:titleTextColor="@color/colorIcons">
 

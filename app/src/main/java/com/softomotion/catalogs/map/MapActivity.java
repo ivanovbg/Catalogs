@@ -3,6 +3,7 @@ package com.softomotion.catalogs.map;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -37,6 +38,7 @@ import com.softomotion.catalogs.data.api.models.city.City;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMapBinding;
+import com.softomotion.catalogs.databinding.CustomBrochuresPopupBinding;
 import com.softomotion.catalogs.main.MainActivity;
 import com.softomotion.catalogs.map.models.MapPin;
 import com.softomotion.catalogs.core.map.presenter.MapPresenter;
@@ -58,10 +60,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Dialog brochuresDialog;
     private RecyclerView brochuresRecycleView;
     private BrochuresListAdapter brochuresListAdapter;
-
-
-
     private ClusterManager<MapPin> mClusterManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         binding.bottomNavigation.bottomNavigationView.setSelectedItemId(R.id.map);
         binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(itemReselectedListener);
+
+
+
     }
 
 
