@@ -2,20 +2,20 @@ package com.softomotion.catalogs.data.api.models.closest_city;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Response{
+public class ClosestCityResponse {
 
 	@SerializedName("response")
-	private Response response;
+	private ClosestCityResponse closestCityResponse;
 
 	@SerializedName("city")
 	private City city;
 
-	public void setResponse(Response response){
-		this.response = response;
+	public void setClosestCityResponse(ClosestCityResponse closestCityResponse){
+		this.closestCityResponse = closestCityResponse;
 	}
 
-	public Response getResponse(){
-		return response;
+	public ClosestCityResponse getClosestCityResponse(){
+		return closestCityResponse;
 	}
 
 	public void setCity(City city){
@@ -30,7 +30,7 @@ public class Response{
  	public String toString(){
 		return
 			"Cities{" +
-			"response = '" + response + '\'' +
+			"closestCityResponse = '" + closestCityResponse + '\'' +
 			",city = '" + city + '\'' +
 			"}";
 		}

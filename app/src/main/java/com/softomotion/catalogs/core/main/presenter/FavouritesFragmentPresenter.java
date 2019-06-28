@@ -17,11 +17,11 @@ public class FavouritesFragmentPresenter<V extends FavouritesFragmentView> exten
     }
 
     @Override
-    public void getBrochures() {
+    public void loadBrochures() {
         getDb().getFavouritesBrochures(new DatabaseInstance.DatabaseListener<List<Brochure>>() {
             @Override
             public void onFavouriteBrochuresLoaded(List<Brochure> data) {
-                getmView().loadBrochures(data);
+                getmView().showBrochures(data);
             }
         });
     }

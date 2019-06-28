@@ -13,15 +13,28 @@ public interface AppConsts {
     String API_BROCHURES_PATH = "/city_index";
     String API_BROCHURE_PATH = "/brochure_view";
 
+    //more
+    Integer DEFAULT_CITY_ID = 215; //Sofia
+
     //database
     String DATABASE_NAME = "brochures.db";
 
 
-     HashMap<String, Double> WORLD_COORDINATES = new HashMap<String, Double>(){{
+    HashMap<String, Double> WORLD_COORDINATES = new HashMap<String, Double>() {{
         put("top_left_lat", 85.0);
         put("top_left_long", -180.0);
         put("bottom_right_lat", -85.0);
         put("bottom_right_long", 179.999999999);
 
     }};
+
+
+    //location
+    long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+    int REQUEST_CHECK_SETTINGS = 100;
+    int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+    //sharedpreference
+    String MY_PREFS = "MY_SETTINGS";
 }

@@ -4,11 +4,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.core.base.BasePresenter;
 import com.softomotion.catalogs.data.api.Api;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
+import com.softomotion.catalogs.data.api.models.brochures.BrochuresResponse;
 import com.softomotion.catalogs.data.api.models.city.City;
 import com.softomotion.catalogs.data.api.models.pins.PinsItem;
+import com.softomotion.catalogs.data.api.models.pins.PinsResponse;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 import com.softomotion.catalogs.data.prefs.DataManager;
@@ -30,52 +33,66 @@ public class MapPresenter  <V extends MapView> extends BasePresenter<V> implemen
     }
 
     @Override
-    public void getCity(Integer city_id) {
-
-        getApi().getServices().city(city_id).enqueue(new Callback<List<City>>() {
+    public void loadCity(Integer city_id) {
+        getApi().getCity(city_id, new Callback<List<City>>() {
             @Override
             public void onResponse(Call<List<City>> call, Response<List<City>> response) {
-                if(response.isSuccessful()) {
+                if(response.isSuccessful()){
                     getmView().showCity(response.body().get(0));
                 }
             }
 
             @Override
             public void onFailure(Call<List<City>> call, Throwable t) {
-
+                getmView().showError();
             }
         });
     }
 
     @Override
-    public void getPins(HashMap<String, Double> coordinates) {
-        getApi().getServices().pins(coordinates, getDataManager().getCityId()).enqueue(new Callback<com.softomotion.catalogs.data.api.models.pins.Response>() {
+    public void loadPins(HashMap<String, Double> coordinates) {
+        getApi().getCityPins(coordinates, getDataManager().getLocationCityId(), new Callback<PinsResponse>() {
             @Override
-            public void onResponse(Call<com.softomotion.catalogs.data.api.models.pins.Response> call, Response<com.softomotion.catalogs.data.api.models.pins.Response> response) {
-                prepareMapPins(response.body().getResponse().getPins());
+            public void onResponse(Call<PinsResponse> call, Response<PinsResponse> response) {
+                if(response.isSuccessful()){
+                    prepareMapPins(response.body().getPinsResponse().getPins());
+                }
             }
 
             @Override
-            public void onFailure(Call<com.softomotion.catalogs.data.api.models.pins.Response> call, Throwable t) {
-
+            public void onFailure(Call<PinsResponse> call, Throwable t) {
+                getmView().showError();
             }
         });
     }
 
     @Override
-    public void getBrochures(Integer city_id, Integer[] brands_filters) {
-        getApi().getServices().getBrandBrochures(city_id, brands_filters).enqueue(new Callback<com.softomotion.catalogs.data.api.models.brochures.Response>() {
+    public void loadBrochures(Integer city_id, Integer[] brands_filters) {
+        getApi().getBrandBrochures(city_id, brands_filters, new Callback<BrochuresResponse>() {
             @Override
-            public void onResponse(Call<com.softomotion.catalogs.data.api.models.brochures.Response> call, Response<com.softomotion.catalogs.data.api.models.brochures.Response> response) {
-                responseBrochures(response.body().getResponse().getBrochures());
+            public void onResponse(Call<BrochuresResponse> call, Response<BrochuresResponse> response) {
+                if(response.isSuccessful()){
+                    responseBrochures(response.body().getBrochuresResponse().getBrochures());
+                }
             }
 
             @Override
-            public void onFailure(Call<com.softomotion.catalogs.data.api.models.brochures.Response> call, Throwable t) {
-
+            public void onFailure(Call<BrochuresResponse> call, Throwable t) {
+                getmView().showError();
             }
         });
     }
+
+
+    private void responseBrochures(List<BrochuresItem> brochuresItems){
+        getDb().getLikedBrochures(new DatabaseInstance.DatabaseListener<List<Integer>>() {
+            @Override
+            public void onFavouriteBrochuresLoaded(List<Integer> data) {
+                getmView().showBrochures(brochuresItems, data);
+            }
+        });
+    }
+
 
     @Override
     public void likeBrochure(BrochuresItem brochuresItem) {
@@ -91,16 +108,6 @@ public class MapPresenter  <V extends MapView> extends BasePresenter<V> implemen
         getDb().unlikeBrochure(brochure_id);
     }
 
-
-    private void responseBrochures(List<BrochuresItem> brochuresItems){
-        getDb().getLikedBrochures(new DatabaseInstance.DatabaseListener<List<Integer>>() {
-            @Override
-            public void onFavouriteBrochuresLoaded(List<Integer> data) {
-                getmView().showBrochures(brochuresItems, data);
-            }
-        });
-    }
-
     private void prepareMapPins(List<PinsItem> pins){
         new AsyncTask<List<PinsItem>, Void, List<MapPin>>() {
 
@@ -114,7 +121,7 @@ public class MapPresenter  <V extends MapView> extends BasePresenter<V> implemen
                         LatLng location = new LatLng(pins.get(pos).getCoordinates().getLatitude(), pins.get(pos).getCoordinates().getLongitude());
                         String title = pins.get(pos).getBrand().getName();
                         String snippet = pins.get(pos).getBrand().getName();
-                        String image = "https://static.broshura.bg/img/" + pins.get(pos).getBrand().getLogo();
+                        String image = AppConsts.STATIC_DOMAIN + pins.get(pos).getBrand().getLogo();
                         Integer brandId = pins.get(pos).getBrand().getId();
                         mapPins.add(new MapPin(location, title, snippet, image, brandId));
                     }

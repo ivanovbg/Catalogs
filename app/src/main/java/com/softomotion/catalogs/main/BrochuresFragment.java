@@ -32,6 +32,7 @@ import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.FragmentBrochuresBinding;
 import com.softomotion.catalogs.map.MapActivity;
 import com.softomotion.catalogs.utils.CommonUtils;
+import com.softomotion.catalogs.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,6 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
         binding.brochureRecycleView.brochureRecycleView.setVisibility(View.VISIBLE);
         brochuresRecycleView = binding.brochureRecycleView.brochureRecycleView;
         brochuresRecycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
         return binding.getRoot();
     }
 
@@ -80,6 +80,7 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         ((MainActivity) getActivity()).registerBrochuresFragmentListener(this);
     }
 
@@ -91,15 +92,15 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
     @Override
     public void onResume(){
         super.onResume();
+
         if(brochuresListAdapter != null) {
             reloadData();
         }
     }
 
     @Override
-    public void loadBrochures(List<BrochuresItem> brochuresItems, List<Integer> likeBrochures) {
+    public void showBrochures(List<BrochuresItem> brochuresItems, List<Integer> likeBrochures) {
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
-
         if(brochuresListAdapter == null) {
             brochuresListAdapter = new BrochuresListAdapter(getContext(), brochuresItems, brochureItemClickListener);
             brochuresRecycleView.setAdapter(brochuresListAdapter);
@@ -118,10 +119,13 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
         }
 
         @Override
-        public void onBrochureLik(BrochuresItem brochuresItem, View itemView) {
-            if(itemView.findViewById(R.id.brochure_like_btn).isActivated()){
-                itemView.findViewById(R.id.brochure_like_btn).setActivated(false);
+        public void onBrochureLike(BrochuresItem brochuresItem, View itemView) {
+            boolean is_like = (itemView.findViewById(R.id.brochure_like_btn).isActivated()) ? true : false;
+            boolean status = is_like ? false : true;
+
+            if(is_like){
                 brochuresFragmentPresenter.unLikeBrochure(brochuresItem.getId());
+                itemView.findViewById(R.id.brochure_like_btn).setActivated(status);
                 ((MainActivity)getActivity()).favouritesFragmentListener.reloadData();
                 if(brochuresListAdapter.likeBrochures.contains(brochuresItem.getId())){
                     brochuresListAdapter.likeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
@@ -129,7 +133,7 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
                 brochuresListAdapter.unlikeBrochures.add(brochuresItem.getId());
             }else{
                 brochuresFragmentPresenter.likeBrochure(brochuresItem);
-                itemView.findViewById(R.id.brochure_like_btn).setActivated(true);
+                itemView.findViewById(R.id.brochure_like_btn).setActivated(status);
                 ((MainActivity)getActivity()).favouritesFragmentListener.reloadData();
                 if(brochuresListAdapter.unlikeBrochures.contains(brochuresItem.getId())){
                     brochuresListAdapter.unlikeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
@@ -142,7 +146,13 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
 
     @Override
     public void reloadData() {
+        if(!NetworkUtils.isNetworkConnected(getContext())){
+            ((MainActivity)getActivity()).showError();
+            return;
+        }
+
+
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.VISIBLE, 0.4f, 200);
-        brochuresFragmentPresenter.getBrochures(dataManager.getCityId());
+        brochuresFragmentPresenter.loadBrochures(dataManager.getUserCityId());
     }
 }

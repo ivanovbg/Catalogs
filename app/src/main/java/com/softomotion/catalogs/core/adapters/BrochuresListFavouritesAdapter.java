@@ -45,7 +45,7 @@ public class BrochuresListFavouritesAdapter extends RecyclerView.Adapter<Recycle
 
         Glide.with(context)
                 .load(AppConsts.STATIC_DOMAIN + brochures.get(position).getBrochure_image())
-                .error(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_brochure_image)
                 .into(hol.brochure_image)
         ;
 

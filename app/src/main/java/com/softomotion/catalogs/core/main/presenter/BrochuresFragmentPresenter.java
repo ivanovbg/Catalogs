@@ -4,7 +4,7 @@ import com.softomotion.catalogs.core.base.BasePresenter;
 import com.softomotion.catalogs.core.main.BrochuresFragmentView;
 import com.softomotion.catalogs.data.api.Api;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
-import com.softomotion.catalogs.data.api.models.brochures.Response;
+import com.softomotion.catalogs.data.api.models.brochures.BrochuresResponse;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 import com.softomotion.catalogs.data.prefs.DataManager;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BrochuresFragmentPresenter  <V extends BrochuresFragmentView> extends BasePresenter<V> implements BrochuresFragmentPresenterInterface<V> {
     public BrochuresFragmentPresenter(DataManager dataManager, Api api, DatabaseInstance db) {
@@ -20,15 +21,17 @@ public class BrochuresFragmentPresenter  <V extends BrochuresFragmentView> exten
     }
 
     @Override
-    public void getBrochures(Integer city_id) {
-        getApi().getServices().getBrochures(city_id).enqueue(new Callback<Response>() {
+    public void loadBrochures(Integer city_id) {
+        getApi().getBrochures(city_id, new Callback<BrochuresResponse>() {
             @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                responseBrochures(response.body().getResponse().getBrochures());
+            public void onResponse(Call<BrochuresResponse> call, Response<BrochuresResponse> response) {
+                if(response.isSuccessful()){
+                    responseBrochures(response.body().getBrochuresResponse().getBrochures());
+                }
             }
 
             @Override
-            public void onFailure(Call<Response> call, Throwable t) {
+            public void onFailure(Call<BrochuresResponse> call, Throwable t) {
 
             }
         });
@@ -38,7 +41,7 @@ public class BrochuresFragmentPresenter  <V extends BrochuresFragmentView> exten
         getDb().getLikedBrochures(new DatabaseInstance.DatabaseListener<List<Integer>>() {
             @Override
             public void onFavouriteBrochuresLoaded(List<Integer> data) {
-                getmView().loadBrochures(brochuresItems, data);
+                getmView().showBrochures(brochuresItems, data);
             }
         });
     }

@@ -34,7 +34,7 @@ public class BrochuresListHolder extends  RecyclerView.ViewHolder{
         this.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                brochureItemClickListener.onBrochureLik(brochure, itemView);
+                brochureItemClickListener.onBrochureLike(brochure, itemView);
             }
         });
     }
@@ -45,6 +45,6 @@ public class BrochuresListHolder extends  RecyclerView.ViewHolder{
 
     public interface BrochureItemClickListener{
         void onBrochureClick(Integer brochure_id);
-        void onBrochureLik(BrochuresItem brochuresItem, View itemView);
+        void onBrochureLike(BrochuresItem brochuresItem, View itemView);
     }
 }

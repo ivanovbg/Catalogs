@@ -3,5 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:paddingRight="10dp"
+    android:paddingRight="@dimen/spinner_image_right_padding"
     android:src="@drawable/ic_location_on_black_24dp" />

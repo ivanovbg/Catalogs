@@ -1,8 +1,10 @@
 package com.softomotion.catalogs.map;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +46,7 @@ import com.softomotion.catalogs.map.models.MapPin;
 import com.softomotion.catalogs.core.map.presenter.MapPresenter;
 import com.softomotion.catalogs.utils.CommonUtils;
 import com.softomotion.catalogs.utils.MapPinRender;
+import com.softomotion.catalogs.utils.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +77,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         setSupportActionBar(binding.appBar.toolbar);
 
-        dataManager = ((Catalogs)getApplication()).getDataManager();
+        dataManager = ((Catalogs) getApplication()).getDataManager();
         api = ((Catalogs) getApplication()).getApiManager();
         db = ((Catalogs) getApplication()).getDatabaseInstance();
 
@@ -85,34 +88,31 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding.bottomNavigation.bottomNavigationView.setSelectedItemId(R.id.map);
         binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(itemReselectedListener);
 
-
-
     }
-
-
-    private BottomNavigationView.OnNavigationItemSelectedListener itemReselectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            if(menuItem.getItemId() == R.id.home){
-                finish();
-            }
-            return false;
-        }
-    };
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mapPresenter.getCity(dataManager.getCityId());
+        googleMap.isMyLocationEnabled();
+        loadPins();
+    }
+
+
+    private void loadPins() {
+        if (!NetworkUtils.isNetworkConnected(this)) {
+            showError();
+            return;
+        }
+
+        mapPresenter.loadCity(dataManager.getLocationCityId());
     }
 
     @Override
-    public void showCity(City city){
+    public void showCity(City city) {
         LatLng userCity = new LatLng(city.getLat(), city.getlLong());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(userCity));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userCity,14));
-        mapPresenter.getPins(AppConsts.WORLD_COORDINATES);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userCity, 14));
+        mapPresenter.loadPins(AppConsts.WORLD_COORDINATES);
     }
 
     @Override
@@ -127,28 +127,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mClusterManager.setOnClusterClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);
-    }
-
-    @Override
-    public void showBrochures(List<BrochuresItem> brochures, List<Integer> likedBrochures) {
-        if(brochuresListAdapter == null){
-            brochuresListAdapter = new BrochuresListAdapter(this, brochures, brochureItemClickListener);
-            brochuresRecycleView.setAdapter(brochuresListAdapter);
-        }else{
-            brochuresListAdapter.updateData(brochures);
-        }
-
-        brochuresListAdapter.likeBrochures = likedBrochures;
-
-        brochuresDialog.findViewById(R.id.progress_overlay).setVisibility(View.GONE);
-
-        if(brochures.size() == 0){
-            brochuresDialog.findViewById(R.id.no_brochure_text_view).setVisibility(View.VISIBLE);
-        }else {
-            brochuresDialog.findViewById(R.id.brochureRecycleView).setVisibility(View.VISIBLE);
-        }
-
-
     }
 
     @Override
@@ -171,14 +149,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public boolean onClusterItemClick(MapPin mapPin) {
-        setupBrochureDialog();
+        showBrochuresDialog();
+
+
         Integer[] brands_filters = {mapPin.getmBrandId()};
-        mapPresenter.getBrochures(dataManager.getCityId(), brands_filters);
+        mapPresenter.loadBrochures(dataManager.getLocationCityId(), brands_filters);
         return false;
     }
 
-    private void setupBrochureDialog(){
-        if(brochuresDialog == null){
+    private void showBrochuresDialog() {
+        if (brochuresDialog == null) {
             brochuresDialog = new Dialog(this);
             brochuresDialog.setContentView(R.layout.custom_brochures_popup);
             brochuresRecycleView = brochuresDialog.findViewById(R.id.brochureRecycleView);
@@ -193,6 +173,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         brochuresDialog.show();
     }
 
+    @Override
+    public void showBrochures(List<BrochuresItem> brochures, List<Integer> likedBrochures) {
+        if (brochuresListAdapter == null) {
+            brochuresListAdapter = new BrochuresListAdapter(this, brochures, brochureItemClickListener);
+            brochuresRecycleView.setAdapter(brochuresListAdapter);
+        } else {
+            brochuresListAdapter.updateData(brochures);
+        }
+
+        brochuresListAdapter.likeBrochures = likedBrochures;
+
+        brochuresDialog.findViewById(R.id.progress_overlay).setVisibility(View.GONE);
+
+        if (brochures.size() == 0) {
+            brochuresDialog.findViewById(R.id.no_brochure_text_view).setVisibility(View.VISIBLE);
+        } else {
+            brochuresDialog.findViewById(R.id.brochureRecycleView).setVisibility(View.VISIBLE);
+        }
+
+    }
+
 
     private BrochuresListHolder.BrochureItemClickListener brochureItemClickListener = new BrochuresListHolder.BrochureItemClickListener() {
         @Override
@@ -203,23 +204,53 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
         @Override
-        public void onBrochureLik(BrochuresItem brochuresItem, View itemView) {
-            if(itemView.findViewById(R.id.brochure_like_btn).isActivated()){
+        public void onBrochureLike(BrochuresItem brochuresItem, View itemView) {
+            if (itemView.findViewById(R.id.brochure_like_btn).isActivated()) {
                 itemView.findViewById(R.id.brochure_like_btn).setActivated(false);
                 mapPresenter.unLikeBrochure(brochuresItem.getId());
-                if(brochuresListAdapter.likeBrochures.contains(brochuresItem.getId())){
+                if (brochuresListAdapter.likeBrochures.contains(brochuresItem.getId())) {
                     brochuresListAdapter.likeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
                 }
                 brochuresListAdapter.unlikeBrochures.add(brochuresItem.getId());
-            }else{
+            } else {
                 mapPresenter.likeBrochure(brochuresItem);
                 itemView.findViewById(R.id.brochure_like_btn).setActivated(true);
-                if(brochuresListAdapter.unlikeBrochures.contains(brochuresItem.getId())){
+                if (brochuresListAdapter.unlikeBrochures.contains(brochuresItem.getId())) {
                     brochuresListAdapter.unlikeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
                 }
                 brochuresListAdapter.likeBrochures.add(brochuresItem.getId());
             }
         }
     };
+
+
+    private BottomNavigationView.OnNavigationItemSelectedListener itemReselectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            if (menuItem.getItemId() == R.id.home) {
+                finish();
+            }
+            return false;
+        }
+    };
+
+
+    public void showError() {
+        if (brochuresDialog != null && brochuresDialog.isShowing()) {
+            brochuresDialog.hide();
+        }
+        CommonUtils.showError(this, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                loadPins();
+            }
+        }, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        }).show();
+
+    }
 
 }

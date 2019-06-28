@@ -7,5 +7,6 @@ import com.softomotion.catalogs.data.api.models.brochure.PagesItem;
 import java.util.List;
 
 public interface BrochureView extends View {
-    void loadBrochure(Brochure brochure);
+    void showBrochure(Brochure brochure);
+    void showError();
 }

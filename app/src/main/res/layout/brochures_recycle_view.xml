@@ -4,7 +4,7 @@
         android:id="@+id/brochureRecycleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/brochures_recycle_view_margin"
         android:visibility="gone">
 
     </androidx.recyclerview.widget.RecyclerView>

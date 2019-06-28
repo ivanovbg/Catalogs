@@ -6,6 +6,6 @@ import com.softomotion.catalogs.data.database.entities.Brochure;
 import java.util.List;
 
 public interface FavouritesFragmentView extends View {
-    void loadBrochures(List<Brochure> brochures);
+    void showBrochures(List<Brochure> brochures);
     void reloadData();
 }

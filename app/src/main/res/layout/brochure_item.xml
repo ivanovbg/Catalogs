@@ -4,7 +4,7 @@
     android:id="@+id/idCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="7dp"
+    android:layout_margin="@dimen/brochure_item_cardview_margin"
     android:background="@drawable/brochure_item_background"
     android:elevation="7dp"
     app:cardCornerRadius="0dp"
@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_margin="@dimen/brochure_item_elements_margin">
 
         <TextView
             android:id="@+id/brand_name"
@@ -25,7 +25,7 @@
             android:id="@+id/brochure_image"
             android:layout_below="@+id/brand_name"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="@dimen/brochure_small_image_height"
             android:scaleType="fitCenter" />
 
         <ImageButton

@@ -5,5 +5,5 @@ import com.softomotion.catalogs.core.brochure.BrochureView;
 
 public interface BrochurePresenterInterface <V extends BrochureView> extends Presenter<V> {
 
-    void getBrochure(Integer brochure_id);
+    void loadBrochure(Integer brochure_id);
 }

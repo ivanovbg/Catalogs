@@ -52,7 +52,7 @@ public class BrochuresListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         Glide.with(context)
                 .load(AppConsts.STATIC_DOMAIN + brochures.get(position).getPages().get(0).getImage().getMedium())
-                .error(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_brochure_image)
                 .placeholder(circularProgressDrawable)
                 .into(hol.brochure_image)
         ;

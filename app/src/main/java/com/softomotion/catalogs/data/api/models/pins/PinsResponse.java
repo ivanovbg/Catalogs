@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 
-public class Response{
+public class PinsResponse {
 
 	@SerializedName("response")
-	private Response response;
+	private PinsResponse pinsResponse;
 
 	@SerializedName("search")
 	private int search;
@@ -17,12 +17,12 @@ public class Response{
 	@SerializedName("pins")
 	private List<PinsItem> pins;
 
-	public void setResponse(Response response){
-		this.response = response;
+	public void setPinsResponse(PinsResponse pinsResponse){
+		this.pinsResponse = pinsResponse;
 	}
 
-	public Response getResponse(){
-		return response;
+	public PinsResponse getPinsResponse(){
+		return pinsResponse;
 	}
 
 	public void setSearch(int search){
@@ -44,8 +44,8 @@ public class Response{
 	@Override
  	public String toString(){
 		return 
-			"Response{" + 
-			"response = '" + response + '\'' + 
+			"BrochureResponse{" +
+			"pinsResponse = '" + pinsResponse + '\'' +
 			",search = '" + search + '\'' + 
 			",pins = '" + pins + '\'' + 
 			"}";

@@ -11,4 +11,5 @@ public interface MapView extends View {
     void showCity(City city);
     void showPins(List<MapPin> pins);
     void showBrochures(List<BrochuresItem> brochures, List<Integer> likedBrochures);
+    void showError();
 }

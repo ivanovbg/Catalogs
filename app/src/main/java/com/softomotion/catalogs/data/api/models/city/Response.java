@@ -196,7 +196,7 @@ public class Response{
 	@Override
  	public String toString(){
 		return 
-			"Response{" + 
+			"BrochureResponse{" +
 			"image = '" + image + '\'' + 
 			",meta_heading = '" + metaHeading + '\'' + 
 			",copied = '" + copied + '\'' + 

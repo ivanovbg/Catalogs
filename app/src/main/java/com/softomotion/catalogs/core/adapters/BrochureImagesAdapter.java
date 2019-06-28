@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.softomotion.catalogs.R;
+import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.api.models.brochure.Image;
 import com.softomotion.catalogs.data.api.models.brochure.PagesItem;
 
@@ -39,8 +40,8 @@ public class BrochureImagesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         BrochuresImageHolder hol = (BrochuresImageHolder) holder;
 
         Glide.with(context)
-                .load("https://static.broshura.bg/img/" + pages.get(position).getImage().getMedium())
-                .error(R.drawable.ic_launcher_background)
+                .load(AppConsts.STATIC_DOMAIN + pages.get(position).getImage().getMedium())
+                .error(R.drawable.ic_brochure_image)
                 .into(hol.image)
         ;
     }

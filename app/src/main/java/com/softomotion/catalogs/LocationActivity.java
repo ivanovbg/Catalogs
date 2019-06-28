@@ -33,11 +33,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.softomotion.catalogs.data.api.models.closest_city.Response;
 import com.softomotion.catalogs.main.MainActivity;
-
-import retrofit2.Call;
-import retrofit2.Callback;
 
 public class LocationActivity extends AppCompatActivity {
 

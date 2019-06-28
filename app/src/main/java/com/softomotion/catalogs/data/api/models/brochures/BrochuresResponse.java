@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 
-public class Response{
+public class BrochuresResponse {
 
 	@SerializedName("response")
-	private Response response;
+	private BrochuresResponse brochuresResponse;
 
 	@SerializedName("brochures")
 	private List<BrochuresItem> brochures;
@@ -20,12 +20,12 @@ public class Response{
 	@SerializedName("categories")
 	private List<CategoriesItem> categories;
 
-	public void setResponse(Response response){
-		this.response = response;
+	public void setBrochuresResponse(BrochuresResponse brochuresResponse){
+		this.brochuresResponse = brochuresResponse;
 	}
 
-	public Response getResponse(){
-		return response;
+	public BrochuresResponse getBrochuresResponse(){
+		return brochuresResponse;
 	}
 
 	public void setBrochures(List<BrochuresItem> brochures){
@@ -55,8 +55,8 @@ public class Response{
 	@Override
  	public String toString(){
 		return 
-			"Response{" + 
-			"response = '" + response + '\'' + 
+			"BrochureResponse{" +
+			"brochuresResponse = '" + brochuresResponse + '\'' +
 			",brochures = '" + brochures + '\'' + 
 			",brands = '" + brands + '\'' + 
 			",categories = '" + categories + '\'' + 

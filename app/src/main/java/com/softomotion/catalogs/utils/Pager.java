@@ -9,57 +9,48 @@ import com.softomotion.catalogs.main.FavouritesFragment;
 
 
 public class Pager extends FragmentStatePagerAdapter {
-        //integer to count number of tabs
-        int tabCount;
-        private String[] tabTitles = new String[]{"Брошури", "Любими"};
-        public BrochuresFragment brochuresFragment;
-        public FavouritesFragment favouritesFragment;
+    int tabCount;
+    private String[] tabTitles;
+    public BrochuresFragment brochuresFragment;
+    public FavouritesFragment favouritesFragment;
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabTitles[position];
-        }
 
-        //Constructor to the class
-        public Pager(FragmentManager fm, int tabCount) {
-            super(fm);
-            //Initializing tab count
-            this.tabCount= tabCount;
-        }
+    public Pager(FragmentManager fm, int tabCount, String[] tabTitles) {
+        super(fm);
+        this.tabCount = tabCount;
+        this.tabTitles = tabTitles;
+    }
 
-        //Overriding method getItem
-        @Override
-        public Fragment getItem(int position) {
-//            mObservers.deleteObservers();
-            switch (position) {
-                case 0:
-                    brochuresFragment = new BrochuresFragment();
-                    return brochuresFragment;
-                case 1:
-                    favouritesFragment = new FavouritesFragment();
-                    return favouritesFragment;
-                default:
-                    return null;
-            }
-        }
 
-        //Overriden method getCount to get the number of tabs
-        @Override
-        public int getCount() {
-            return tabCount;
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-        public Fragment getFragment(String fragment_tag){
-            if(fragment_tag == "brochures"){
+    @Override
+    public Fragment getItem(int position) {
+        switch (position) {
+            case 0:
+                brochuresFragment = new BrochuresFragment();
                 return brochuresFragment;
-            }else {
+            case 1:
+                favouritesFragment = new FavouritesFragment();
                 return favouritesFragment;
-            }
+            default:
+                return null;
         }
+    }
+
+
+    @Override
+    public int getCount() {
+        return tabCount;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return tabTitles[position];
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
 
 }

@@ -10,13 +10,23 @@ public class DataManager {
         mSharedPrefsHelper = sharedPrefsHelper;
     }
 
-    public void putCoords(String latitude, String longitude) {
-        mSharedPrefsHelper.putCoords(latitude, longitude);
+    public void setUserCityId(Integer city_id){
+        mSharedPrefsHelper.putUserCityId(city_id);
     }
 
-    public String[] getCoords(){
-        return mSharedPrefsHelper.getCoords();
+    public Integer getUserCityId(){
+        return mSharedPrefsHelper.getUserCityId();
     }
+
+    public void setLocationCityId(Integer city_id){
+        mSharedPrefsHelper.putLocationCityId(city_id);
+    }
+
+    public Integer getLocationCityId(){
+        return mSharedPrefsHelper.getLocationCityId();
+    }
+
+
 
     public void putCityId(Integer city_id){
         mSharedPrefsHelper.putCityId(city_id);

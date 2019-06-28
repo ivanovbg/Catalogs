@@ -2,20 +2,20 @@ package com.softomotion.catalogs.data.api.models.brochure;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Response{
+public class BrochureResponse {
 
 	@SerializedName("response")
-	private Response response;
+	private BrochureResponse brochureResponse;
 
 	@SerializedName("brochure")
 	private Brochure brochure;
 
-	public void setResponse(Response response){
-		this.response = response;
+	public void setBrochureResponse(BrochureResponse brochureResponse){
+		this.brochureResponse = brochureResponse;
 	}
 
-	public Response getResponse(){
-		return response;
+	public BrochureResponse getBrochureResponse(){
+		return brochureResponse;
 	}
 
 	public void setBrochure(Brochure brochure){
@@ -30,8 +30,8 @@ public class Response{
 	@Override
  	public String toString(){
 		return 
-			"Response{" + 
-			"response = '" + response + '\'' + 
+			"BrochureResponse{" +
+			"brochureResponse = '" + brochureResponse + '\'' +
 			",brochure = '" + brochure + '\'' +
 			"}";
 		}

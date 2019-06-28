@@ -26,6 +26,7 @@ import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.FragmentFavouritesBinding;
+import com.softomotion.catalogs.utils.NetworkUtils;
 
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourites, container, false);
 
-        favouritesFragmentPresenter.getBrochures();
+        favouritesFragmentPresenter.loadBrochures();
         binding.brochureRecycleView.brochureRecycleView.setVisibility(View.VISIBLE);
         brochuresRecycleView = binding.brochureRecycleView.brochureRecycleView;
         brochuresRecycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -98,7 +99,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
     }
 
     @Override
-    public void loadBrochures(List<Brochure> brochures) {
+    public void showBrochures(List<Brochure> brochures) {
        if(brochuresListFavouritesAdapter == null){
            brochuresListFavouritesAdapter = new BrochuresListFavouritesAdapter(getContext(), brochures, brochureItemClickListener);
            brochuresRecycleView.setAdapter(brochuresListFavouritesAdapter);
@@ -109,7 +110,12 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
 
     @Override
     public void reloadData() {
-        favouritesFragmentPresenter.getBrochures();
+        if(!NetworkUtils.isNetworkConnected(getContext())){
+            ((MainActivity)getActivity()).showError();
+            return;
+        }
+
+        favouritesFragmentPresenter.loadBrochures();
     }
 
     private BrochuresListFavouritesHolder.BrochureItemClickListener brochureItemClickListener = new BrochuresListFavouritesHolder.BrochureItemClickListener() {
@@ -121,7 +127,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
         }
 
         @Override
-        public void onBrochureLik(Brochure brochuresItem, View itemView) {
+        public void onBrochureUnLike(Brochure brochuresItem, View itemView) {
             favouritesFragmentPresenter.unLikeBrochure(brochuresItem.getBrochure_id());
             ((MainActivity)getActivity()).brochuresFragmentListener.reloadData();
         }

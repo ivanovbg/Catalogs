@@ -19,12 +19,13 @@ public class MainPresenter <V extends MainView> extends BasePresenter<V> impleme
     }
 
     @Override
-    public void getCities(){
-        getApi().getServices().cities().enqueue(new Callback<List<Cities>>() {
+    public void loadCities(){
+        getApi().getAllCities(new Callback<List<Cities>>() {
             @Override
             public void onResponse(Call<List<Cities>> call, Response<List<Cities>> response) {
-                List<Cities> cities = response.body();
-                getmView().citiesReady(cities);
+                if(response.isSuccessful()){
+                    getmView().showCities(response.body());
+                }
             }
 
             @Override

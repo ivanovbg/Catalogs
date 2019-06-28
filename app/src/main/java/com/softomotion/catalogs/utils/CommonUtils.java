@@ -2,10 +2,14 @@ package com.softomotion.catalogs.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.View;
 
-import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AlertDialog;
+
+import com.softomotion.catalogs.R;
 
 public class CommonUtils {
 
@@ -33,5 +37,15 @@ public class CommonUtils {
 
     public static String convertDate(long time){
         return new java.text.SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date(time*1000));
+    }
+
+    public static AlertDialog.Builder showError(final Context context, final DialogInterface.OnClickListener positiveListener, final DialogInterface.OnClickListener negativeListener){
+        androidx.appcompat.app.AlertDialog.Builder alertbox = new androidx.appcompat.app.AlertDialog.Builder(context);
+        alertbox.setTitle(R.string.error_title);
+        alertbox.setCancelable(false);
+        alertbox.setMessage(R.string.error_message);
+        alertbox.setNeutralButton(R.string.error_positive_button_text, positiveListener);
+        alertbox.setNegativeButton(R.string.error_negative_button_text, negativeListener);
+        return alertbox;
     }
 }
