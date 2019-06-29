@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface FavouritesFragmentView extends View {
     void showBrochures(List<Brochure> brochures);
-    void reloadData();
 }

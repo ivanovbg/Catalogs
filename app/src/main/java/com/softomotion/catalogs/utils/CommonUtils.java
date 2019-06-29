@@ -8,13 +8,14 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.softomotion.catalogs.R;
 
 public class CommonUtils {
 
-    public static void showSnackBar(){
-         Log.d("API", "API TEST");
+    public static void showSnackBar() {
+        Log.d("API", "API TEST");
     }
 
 
@@ -35,11 +36,11 @@ public class CommonUtils {
                 });
     }
 
-    public static String convertDate(long time){
-        return new java.text.SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date(time*1000));
+    public static String convertDate(long time) {
+        return new java.text.SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date(time * 1000));
     }
 
-    public static AlertDialog.Builder showError(final Context context, final DialogInterface.OnClickListener positiveListener, final DialogInterface.OnClickListener negativeListener){
+    public static AlertDialog.Builder showError(final Context context, final DialogInterface.OnClickListener positiveListener, final DialogInterface.OnClickListener negativeListener) {
         androidx.appcompat.app.AlertDialog.Builder alertbox = new androidx.appcompat.app.AlertDialog.Builder(context);
         alertbox.setTitle(R.string.error_title);
         alertbox.setCancelable(false);
@@ -47,5 +48,13 @@ public class CommonUtils {
         alertbox.setNeutralButton(R.string.error_positive_button_text, positiveListener);
         alertbox.setNegativeButton(R.string.error_negative_button_text, negativeListener);
         return alertbox;
+    }
+
+    public static CircularProgressDrawable circularProgressDrawable(Context context){
+        CircularProgressDrawable circularProgressDrawable =  new CircularProgressDrawable(context);
+        circularProgressDrawable.setStrokeWidth(5f);
+        circularProgressDrawable.setCenterRadius(30f);
+        circularProgressDrawable.start();
+        return circularProgressDrawable;
     }
 }

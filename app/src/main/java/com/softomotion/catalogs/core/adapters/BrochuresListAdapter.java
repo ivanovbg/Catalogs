@@ -1,6 +1,7 @@
 package com.softomotion.catalogs.core.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
+import com.softomotion.catalogs.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +26,13 @@ public class BrochuresListAdapter extends RecyclerView.Adapter<RecyclerView.View
     private BrochuresListHolder.BrochureItemClickListener brochureItemClickListener;
     public List<Integer> likeBrochures = new ArrayList<>();
     public List<Integer> unlikeBrochures = new ArrayList<>();
-    CircularProgressDrawable circularProgressDrawable;
+    private CircularProgressDrawable circularProgressDrawable;
 
     public BrochuresListAdapter(Context context, List<BrochuresItem> brochures, BrochuresListHolder.BrochureItemClickListener brochureItemClickListener){
         this.brochures = brochures;
         this.context = context;
         this.brochureItemClickListener = brochureItemClickListener;
-
-        circularProgressDrawable = new CircularProgressDrawable(context);
-        circularProgressDrawable.setStrokeWidth(5f);
-        circularProgressDrawable.setCenterRadius(30f);
-        circularProgressDrawable.start();
+        this.circularProgressDrawable = CommonUtils.circularProgressDrawable(context);
     }
 
 
@@ -51,20 +49,17 @@ public class BrochuresListAdapter extends RecyclerView.Adapter<RecyclerView.View
         BrochuresListHolder hol = (BrochuresListHolder) holder;
 
         Glide.with(context)
-                .load(AppConsts.STATIC_DOMAIN + brochures.get(position).getPages().get(0).getImage().getMedium())
+                .load(AppConsts.STATIC_DOMAIN + brochures.get(position).getPages().get(AppConsts.DEFAULT_THUMB_IMAGE_ID).getImage().getMedium())
                 .error(R.drawable.ic_brochure_image)
                 .placeholder(circularProgressDrawable)
-                .into(hol.brochure_image)
+                .into(hol.brochureImage)
         ;
 
         hol.setBrochureId(brochures.get(position));
-        hol.brand_name.setText(brochures.get(position).getBrand().getName());
+        hol.brandName.setText(brochures.get(position).getBrand().getName());
 
-        if(brochures.get(position).isIsLiked() || likeBrochures.contains(brochures.get(position).getId())){
-            hol.likeBtn.setActivated(true);
-        }else if(!brochures.get(position).isIsLiked() || unlikeBrochures.contains(brochures.get(position).getId())){
-            hol.likeBtn.setActivated(false);
-        }
+        boolean like_status = likeBrochures.contains(brochures.get(position).getId()) ? true : false;
+        hol.likeBtn.setActivated(like_status);
     }
 
     @Override

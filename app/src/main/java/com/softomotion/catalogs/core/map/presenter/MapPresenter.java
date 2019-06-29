@@ -115,7 +115,6 @@ public class MapPresenter  <V extends MapView> extends BasePresenter<V> implemen
             protected List<MapPin> doInBackground(List<PinsItem>... lists) {
                 List<MapPin> mapPins = new ArrayList<MapPin>();
                 List<PinsItem> pins = lists[0];
-                Log.d("API", "PINS");
                 if(pins.size() != 0){
                     for (int pos = 0; pos < pins.size(); pos++) {
                         LatLng location = new LatLng(pins.get(pos).getCoordinates().getLatitude(), pins.get(pos).getCoordinates().getLongitude());

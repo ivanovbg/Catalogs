@@ -7,12 +7,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 import com.softomotion.catalogs.data.database.entities.Brochure;
+import com.softomotion.catalogs.utils.CommonUtils;
 
 import java.util.List;
 
@@ -22,12 +24,14 @@ public class BrochuresListFavouritesAdapter extends RecyclerView.Adapter<Recycle
     private Context context;
     private List<Brochure> brochures;
     private BrochuresListFavouritesHolder.BrochureItemClickListener brochureItemClickListener;
+    private CircularProgressDrawable circularProgressDrawable;
 
 
     public BrochuresListFavouritesAdapter(Context context, List<Brochure> brochures, BrochuresListFavouritesHolder.BrochureItemClickListener brochureItemClickListener){
         this.brochures = brochures;
         this.context = context;
         this.brochureItemClickListener = brochureItemClickListener;
+        this.circularProgressDrawable = CommonUtils.circularProgressDrawable(context);
     }
 
 
@@ -46,13 +50,14 @@ public class BrochuresListFavouritesAdapter extends RecyclerView.Adapter<Recycle
         Glide.with(context)
                 .load(AppConsts.STATIC_DOMAIN + brochures.get(position).getBrochure_image())
                 .error(R.drawable.ic_brochure_image)
-                .into(hol.brochure_image)
+                .placeholder(circularProgressDrawable)
+                .into(hol.brochureImage)
         ;
 
 
         hol.setBrochureId(brochures.get(position));
         hol.likeBtn.setActivated(true);
-        hol.brand_name.setText(brochures.get(position).getBrochure_name());
+        hol.brandName.setText(brochures.get(position).getBrochure_name());
     }
 
     @Override

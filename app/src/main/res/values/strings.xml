@@ -1,22 +1,6 @@
 <resources>
     <string name="app_name">Catalogs</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_map">MapActivity</string>
-
-
-    <string name="request_location">Моля, споделете вашето местоположение!</string>
-    <string name="request_ok">Добре</string>
-
-
-    <string name="latitude_label">Latitude</string>
-    <string name="longitude_label">Longitude</string>
-
-    <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
-
     <string name="permission_rationale">Необходима ни е вашата локация, за да покажем коректни резултати!</string>
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
-    <string name="settings">Settings</string>
 
     <string name="favourites">Любими</string>
     <string name="home">Начало</string>
@@ -28,4 +12,6 @@
     <string name="error_negative_button_text">Затвори</string>
     <string name="brochures">Брошури</string>
     <string name="brochures_not_found">Съжаляваме, но няма актуални брошури от този бранд.</string>
+    <string name="brochure_to">до</string>
+    <string name="brochure_view">Преглед на брошура</string>
 </resources>

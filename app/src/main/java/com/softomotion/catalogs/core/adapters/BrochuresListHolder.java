@@ -13,18 +13,18 @@ import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 
 
 public class BrochuresListHolder extends  RecyclerView.ViewHolder{
-    public ImageView brochure_image;
+    public ImageView brochureImage;
     public ImageButton likeBtn;
     private BrochuresItem brochure;
-    public TextView brand_name;
+    public TextView brandName;
 
     public BrochuresListHolder(@NonNull View itemView, BrochureItemClickListener brochureItemClickListener) {
         super(itemView);
-        this.brochure_image = itemView.findViewById(R.id.brochure_image);
+        this.brochureImage = itemView.findViewById(R.id.brochure_image);
         this.likeBtn = itemView.findViewById(R.id.brochure_like_btn);
-        this.brand_name = itemView.findViewById(R.id.brand_name);
+        this.brandName = itemView.findViewById(R.id.brand_name);
 
-        this.brochure_image.setOnClickListener(new View.OnClickListener() {
+        this.brochureImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 brochureItemClickListener.onBrochureClick(brochure.getId());

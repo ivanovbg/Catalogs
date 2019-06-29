@@ -2,6 +2,10 @@ package com.softomotion.catalogs.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -24,11 +28,10 @@ public class MapPinRender extends DefaultClusterRenderer<MapPin> {
     private final IconGenerator mIconGenerator;
     private final ImageView mImageView;
     private final int mDimension;
-    Bitmap icon;
+    private Bitmap icon;
+    private Context mContext;
 
-    Context mContext;
-
-   public MapPinRender(Context context, GoogleMap map, ClusterManager<MapPin> clusterManager) {
+    public MapPinRender(Context context, GoogleMap map, ClusterManager<MapPin> clusterManager) {
         super(context, map, clusterManager);
         mContext = context;
         mIconGenerator = new IconGenerator(context);
@@ -48,6 +51,7 @@ public class MapPinRender extends DefaultClusterRenderer<MapPin> {
 
     @Override
     protected void onClusterItemRendered(MapPin clusterItem, final Marker marker) {
+
         Glide.with(mContext).
                 load(clusterItem.getmImage())
                 .asBitmap()

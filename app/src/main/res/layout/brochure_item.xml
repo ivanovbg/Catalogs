@@ -19,13 +19,13 @@
             android:id="@+id/brand_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true" />
 
         <ImageView
             android:id="@+id/brochure_image"
-            android:layout_below="@+id/brand_name"
             android:layout_width="match_parent"
             android:layout_height="@dimen/brochure_small_image_height"
+            android:layout_below="@+id/brand_name"
             android:scaleType="fitCenter" />
 
         <ImageButton

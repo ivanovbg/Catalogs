@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private MainPresenter<MainActivity> mainPressenter;
     public brochuresFragmentListener brochuresFragmentListener;
     public favouritesFragmentListener favouritesFragmentListener;
-
     private List<Cities> cities;
-
     private boolean errorDialogShowed = false;
 
 
@@ -142,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         }
     };
 
+    @Override
     public void showError() {
         if (errorDialogShowed) {
             return;
@@ -157,8 +156,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
         }, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
                 errorDialogShowed = false;
+                finish();
             }
         }).show();
 

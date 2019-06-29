@@ -10,7 +10,7 @@
 
         <include
             android:id="@+id/brochureRecycleView"
-            layout="@layout/brochures_recycle_view"/>
+            layout="@layout/brochures_recycle_view" />
 
         <include
             android:id="@+id/progress_overlay"

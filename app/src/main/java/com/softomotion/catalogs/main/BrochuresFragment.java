@@ -151,7 +151,6 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
             return;
         }
 
-
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.VISIBLE, 0.4f, 200);
         brochuresFragmentPresenter.loadBrochures(dataManager.getUserCityId());
     }

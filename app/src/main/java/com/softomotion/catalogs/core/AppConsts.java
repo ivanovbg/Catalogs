@@ -15,6 +15,7 @@ public interface AppConsts {
 
     //more
     Integer DEFAULT_CITY_ID = 215; //Sofia
+    Integer DEFAULT_THUMB_IMAGE_ID = 0;
 
     //database
     String DATABASE_NAME = "brochures.db";

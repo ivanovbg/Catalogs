@@ -14,7 +14,7 @@ public final class NetworkUtils {
     }
 
     public static boolean isNetworkConnected(Context context) {
-        final ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
             if (Build.VERSION.SDK_INT < 23) {
                 final NetworkInfo ni = cm.getActiveNetworkInfo();

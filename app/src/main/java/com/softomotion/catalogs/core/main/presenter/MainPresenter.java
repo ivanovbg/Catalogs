@@ -30,7 +30,7 @@ public class MainPresenter <V extends MainView> extends BasePresenter<V> impleme
 
             @Override
             public void onFailure(Call<List<Cities>> call, Throwable t) {
-
+                getmView().showError();
             }
         });
     }

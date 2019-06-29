@@ -1,5 +1,7 @@
 package com.softomotion.catalogs.core.splash.presenter;
 
+import android.location.Location;
+
 import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.core.base.BasePresenter;
 import com.softomotion.catalogs.core.splash.SplashView;
@@ -21,7 +23,11 @@ public class SplashPresenter <V extends SplashView> extends BasePresenter<V> imp
     }
 
     @Override
-    public void findCity(HashMap<String, String> coordinates) {
+    public void findCity(Location location) {
+        HashMap<String, String> coordinates = new HashMap<String, String>();
+        coordinates.put("latitude", String.valueOf(location.getLatitude()));
+        coordinates.put("longitude", String.valueOf(location.getLongitude()));
+
         getApi().getClosestCity(coordinates, new Callback<ClosestCityResponse>() {
             @Override
             public void onResponse(Call<ClosestCityResponse> call, Response<ClosestCityResponse> response) {

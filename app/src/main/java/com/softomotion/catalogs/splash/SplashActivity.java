@@ -77,7 +77,6 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
 
         splashPresenter = new SplashPresenter(dataManager, api, db);
 
-        init();
         run();
     }
 
@@ -86,6 +85,8 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
             showError();
             return;
         }
+
+        init();
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -221,6 +222,11 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
         }
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+
 
     @Override
     protected void onPause() {
@@ -233,10 +239,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
 
     private void redirectToHome() {
         if (mCurrentLocation != null) {
-            HashMap<String, String> coordinates = new HashMap<String, String>();
-            coordinates.put("latitude", String.valueOf(mCurrentLocation.getLatitude()));
-            coordinates.put("longitude", String.valueOf(mCurrentLocation.getLongitude()));
-            splashPresenter.findCity(coordinates);
+            splashPresenter.findCity(mCurrentLocation);
         } else {
             dataManager.setLocationCityId(AppConsts.DEFAULT_CITY_ID);
             if (dataManager.getUserCityId() == 0) {

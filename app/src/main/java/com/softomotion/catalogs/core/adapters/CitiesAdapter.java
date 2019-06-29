@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 
 import com.softomotion.catalogs.R;
@@ -18,36 +19,34 @@ import java.util.List;
 
 public class CitiesAdapter extends BaseAdapter {
 
-    private Context context;
     private List<Cities> cities;
     private LayoutInflater layoutInflater;
 
     public CitiesAdapter(Context context, List<Cities> cities) {
-        this.context = context;
         this.cities = cities;
         this.layoutInflater = (LayoutInflater.from(context));
     }
 
 
     @Override
-    public int getCount(){
+    public int getCount() {
         return cities.size();
     }
 
     @Override
-    public Cities getItem(int position){
+    public Cities getItem(int position) {
         return cities.get(position);
     }
 
     @Override
-    public long getItemId(int position){
+    public long getItemId(int position) {
         return position;
     }
 
 
     public int getCityPosition(@Nullable Integer city_id) {
-        for (int i=0;i<cities.size();i++){
-            if (city_id == cities.get(i).getId()){
+        for (int i = 0; i < cities.size(); i++) {
+            if (city_id == cities.get(i).getId()) {
                 return i;
             }
         }
@@ -68,5 +67,5 @@ public class CitiesAdapter extends BaseAdapter {
         return convertView;
     }
 
-    
+
 }

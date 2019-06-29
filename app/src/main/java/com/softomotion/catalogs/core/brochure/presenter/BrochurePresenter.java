@@ -29,7 +29,7 @@ public class BrochurePresenter <V extends BrochureView> extends BasePresenter<V>
 
             @Override
             public void onFailure(Call<BrochureResponse> call, Throwable t) {
-
+                getmView().showError();
             }
         });
     }

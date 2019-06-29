@@ -234,7 +234,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     };
 
-
+    @Override
     public void showError() {
         if (brochuresDialog != null && brochuresDialog.isShowing()) {
             brochuresDialog.hide();

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/custom_popup_brochures"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/custom_popup_brochures"
         android:orientation="vertical">
 
 
@@ -14,20 +14,17 @@
             layout="@layout/progress_overlay" />
 
 
-        <include
-            layout="@layout/brochures_recycle_view"/>
-
+        <include layout="@layout/brochures_recycle_view" />
 
 
         <TextView
-            android:layout_margin="@dimen/brochures_popup_text_dimen"
             android:id="@+id/no_brochure_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/custom_brochures_popup_text_size"
+            android:layout_margin="@dimen/brochures_popup_text_dimen"
             android:text="@string/brochures_not_found"
-            android:visibility="gone"
-            />
+            android:textSize="@dimen/custom_brochures_popup_text_size"
+            android:visibility="gone" />
 
     </LinearLayout>
 </layout>

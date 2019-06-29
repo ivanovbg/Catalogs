@@ -1,6 +1,5 @@
 package com.softomotion.catalogs.brochure;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,8 +64,7 @@ public class BrochureActivity extends AppCompatActivity implements BrochureView 
 
     @Override
     public void showBrochure(Brochure brochure) {
-
-        getSupportActionBar().setSubtitle(brochure.getBrand().getName() + " до " + CommonUtils.convertDate(brochure.getValidity().getEnd()));
+        getSupportActionBar().setSubtitle(brochure.getBrand().getName() + " " + getResources().getString(R.string.brochure_to) + " " + CommonUtils.convertDate(brochure.getValidity().getEnd()));
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
 
         LinearLayoutManager layout  = new LinearLayoutManager(BrochureActivity.this, LinearLayoutManager.HORIZONTAL, false);

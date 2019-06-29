@@ -29,6 +29,5 @@ public class FavouritesFragmentPresenter<V extends FavouritesFragmentView> exten
     @Override
     public void unLikeBrochure(Integer brochure_id) {
         getDb().unlikeBrochure(brochure_id);
-        getmView().reloadData();
     }
 }

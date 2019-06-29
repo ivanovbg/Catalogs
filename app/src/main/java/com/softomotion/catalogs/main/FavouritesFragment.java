@@ -26,6 +26,7 @@ import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.FragmentFavouritesBinding;
+import com.softomotion.catalogs.utils.CommonUtils;
 import com.softomotion.catalogs.utils.NetworkUtils;
 
 import java.util.List;
@@ -100,6 +101,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
 
     @Override
     public void showBrochures(List<Brochure> brochures) {
+        CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
        if(brochuresListFavouritesAdapter == null){
            brochuresListFavouritesAdapter = new BrochuresListFavouritesAdapter(getContext(), brochures, brochureItemClickListener);
            brochuresRecycleView.setAdapter(brochuresListFavouritesAdapter);
@@ -114,7 +116,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
             ((MainActivity)getActivity()).showError();
             return;
         }
-
+        CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.VISIBLE, 0.4f, 200);
         favouritesFragmentPresenter.loadBrochures();
     }
 
@@ -130,6 +132,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
         public void onBrochureUnLike(Brochure brochuresItem, View itemView) {
             favouritesFragmentPresenter.unLikeBrochure(brochuresItem.getBrochure_id());
             ((MainActivity)getActivity()).brochuresFragmentListener.reloadData();
+            reloadData();
         }
     };
 }
