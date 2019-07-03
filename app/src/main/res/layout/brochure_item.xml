@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/brochure_item_cardview_margin"
     android:background="@drawable/brochure_item_background"
-    android:elevation="7dp"
-    app:cardCornerRadius="0dp"
+    android:elevation="@dimen/brochure_item_elevation"
+    app:cardCornerRadius="@dimen/brochure_item_corder_radius"
     app:cardPreventCornerOverlap="false">
 
     <RelativeLayout

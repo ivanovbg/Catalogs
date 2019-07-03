@@ -1,4 +1,4 @@
-package com.softomotion.catalogs.main;
+package com.softomotion.catalogs.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.R;
-import com.softomotion.catalogs.brochure.BrochureActivity;
+import com.softomotion.catalogs.ui.brochure.BrochureActivity;
 import com.softomotion.catalogs.core.adapters.BrochuresListFavouritesAdapter;
 import com.softomotion.catalogs.core.adapters.BrochuresListFavouritesHolder;
 import com.softomotion.catalogs.core.main.FavouritesFragmentView;
@@ -27,7 +27,6 @@ import com.softomotion.catalogs.data.database.entities.Brochure;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.FragmentFavouritesBinding;
 import com.softomotion.catalogs.utils.CommonUtils;
-import com.softomotion.catalogs.utils.NetworkUtils;
 
 import java.util.List;
 
@@ -58,7 +57,6 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
         favouritesFragmentPresenter = new FavouritesFragmentPresenter<>(dataManager, api, db);
         favouritesFragmentPresenter.onAttach(this);
 
-
     }
 
     @Override
@@ -77,14 +75,14 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ((MainActivity)getActivity()).registerFavouriteFragmentListener(this);
+        ((MainActivity) getActivity()).registerFavouriteFragmentListener(this);
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
-        if(brochuresListFavouritesAdapter != null){
+        if (brochuresListFavouritesAdapter != null) {
             reloadData();
         }
     }
@@ -102,18 +100,18 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
     @Override
     public void showBrochures(List<Brochure> brochures) {
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
-       if(brochuresListFavouritesAdapter == null){
-           brochuresListFavouritesAdapter = new BrochuresListFavouritesAdapter(getContext(), brochures, brochureItemClickListener);
-           brochuresRecycleView.setAdapter(brochuresListFavouritesAdapter);
-       }else {
-           brochuresListFavouritesAdapter.updateData(brochures);
-       }
+        if (brochuresListFavouritesAdapter == null) {
+            brochuresListFavouritesAdapter = new BrochuresListFavouritesAdapter(getContext(), brochures, brochureItemClickListener);
+            brochuresRecycleView.setAdapter(brochuresListFavouritesAdapter);
+        } else {
+            brochuresListFavouritesAdapter.updateData(brochures);
+        }
     }
 
     @Override
     public void reloadData() {
-        if(!NetworkUtils.isNetworkConnected(getContext())){
-            ((MainActivity)getActivity()).showError();
+        if (!CommonUtils.isNetworkConnected(getContext())) {
+            ((MainActivity) getActivity()).showError();
             return;
         }
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.VISIBLE, 0.4f, 200);
@@ -131,7 +129,7 @@ public class FavouritesFragment extends Fragment implements FavouritesFragmentVi
         @Override
         public void onBrochureUnLike(Brochure brochuresItem, View itemView) {
             favouritesFragmentPresenter.unLikeBrochure(brochuresItem.getBrochure_id());
-            ((MainActivity)getActivity()).brochuresFragmentListener.reloadData();
+            ((MainActivity) getActivity()).brochuresFragmentListener.reloadData();
             reloadData();
         }
     };

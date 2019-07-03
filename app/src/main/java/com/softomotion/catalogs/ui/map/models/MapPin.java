@@ -1,4 +1,4 @@
-package com.softomotion.catalogs.map.models;
+package com.softomotion.catalogs.ui.map.models;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
@@ -26,10 +26,14 @@ public class MapPin implements ClusterItem {
     }
 
 
-    public String getTitle() { return mTitle; }
+    public String getTitle() {
+        return mTitle;
+    }
 
 
-    public String getSnippet() { return mSnippet; }
+    public String getSnippet() {
+        return mSnippet;
+    }
 
 
     public void setTitle(String title) {

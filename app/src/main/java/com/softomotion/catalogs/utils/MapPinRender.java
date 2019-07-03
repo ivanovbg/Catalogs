@@ -2,10 +2,6 @@ package com.softomotion.catalogs.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -22,7 +18,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.softomotion.catalogs.R;
-import com.softomotion.catalogs.map.models.MapPin;
+import com.softomotion.catalogs.ui.map.models.MapPin;
 
 public class MapPinRender extends DefaultClusterRenderer<MapPin> {
     private final IconGenerator mIconGenerator;

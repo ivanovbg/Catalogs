@@ -1,8 +1,7 @@
-package com.softomotion.catalogs.main;
+package com.softomotion.catalogs.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
@@ -10,17 +9,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.R;
-import com.softomotion.catalogs.brochure.BrochureActivity;
+import com.softomotion.catalogs.ui.brochure.BrochureActivity;
 import com.softomotion.catalogs.core.adapters.BrochuresListAdapter;
 import com.softomotion.catalogs.core.adapters.BrochuresListHolder;
 import com.softomotion.catalogs.core.main.BrochuresFragmentView;
@@ -30,14 +25,9 @@ import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.FragmentBrochuresBinding;
-import com.softomotion.catalogs.map.MapActivity;
 import com.softomotion.catalogs.utils.CommonUtils;
-import com.softomotion.catalogs.utils.NetworkUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 public class BrochuresFragment extends Fragment implements BrochuresFragmentView, MainActivity.brochuresFragmentListener {
 
@@ -90,10 +80,10 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
-        if(brochuresListAdapter != null) {
+        if (brochuresListAdapter != null) {
             reloadData();
         }
     }
@@ -101,10 +91,10 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
     @Override
     public void showBrochures(List<BrochuresItem> brochuresItems, List<Integer> likeBrochures) {
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
-        if(brochuresListAdapter == null) {
+        if (brochuresListAdapter == null) {
             brochuresListAdapter = new BrochuresListAdapter(getContext(), brochuresItems, brochureItemClickListener);
             brochuresRecycleView.setAdapter(brochuresListAdapter);
-        }else{
+        } else {
             brochuresListAdapter.updateData(brochuresItems);
         }
         brochuresListAdapter.likeBrochures = likeBrochures;
@@ -123,19 +113,19 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
             boolean is_like = (itemView.findViewById(R.id.brochure_like_btn).isActivated()) ? true : false;
             boolean status = is_like ? false : true;
 
-            if(is_like){
+            if (is_like) {
                 brochuresFragmentPresenter.unLikeBrochure(brochuresItem.getId());
                 itemView.findViewById(R.id.brochure_like_btn).setActivated(status);
-                ((MainActivity)getActivity()).favouritesFragmentListener.reloadData();
-                if(brochuresListAdapter.likeBrochures.contains(brochuresItem.getId())){
+                ((MainActivity) getActivity()).favouritesFragmentListener.reloadData();
+                if (brochuresListAdapter.likeBrochures.contains(brochuresItem.getId())) {
                     brochuresListAdapter.likeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
                 }
                 brochuresListAdapter.unlikeBrochures.add(brochuresItem.getId());
-            }else{
+            } else {
                 brochuresFragmentPresenter.likeBrochure(brochuresItem);
                 itemView.findViewById(R.id.brochure_like_btn).setActivated(status);
-                ((MainActivity)getActivity()).favouritesFragmentListener.reloadData();
-                if(brochuresListAdapter.unlikeBrochures.contains(brochuresItem.getId())){
+                ((MainActivity) getActivity()).favouritesFragmentListener.reloadData();
+                if (brochuresListAdapter.unlikeBrochures.contains(brochuresItem.getId())) {
                     brochuresListAdapter.unlikeBrochures.remove(Integer.valueOf(brochuresItem.getId()));
                 }
                 brochuresListAdapter.likeBrochures.add(brochuresItem.getId());
@@ -146,8 +136,8 @@ public class BrochuresFragment extends Fragment implements BrochuresFragmentView
 
     @Override
     public void reloadData() {
-        if(!NetworkUtils.isNetworkConnected(getContext())){
-            ((MainActivity)getActivity()).showError();
+        if (!CommonUtils.isNetworkConnected(getContext())) {
+            ((MainActivity) getActivity()).showError();
             return;
         }
 

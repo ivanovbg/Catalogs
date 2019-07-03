@@ -1,4 +1,4 @@
-package com.softomotion.catalogs.brochure;
+package com.softomotion.catalogs.ui.brochure;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -20,8 +20,7 @@ import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityBrochureBinding;
 import com.softomotion.catalogs.utils.CommonUtils;
-import com.softomotion.catalogs.utils.NetworkUtils;
-import com.softomotion.catalogs.utils.SnapHelperOneByOne;
+import com.softomotion.catalogs.utils.SnapUtils;
 
 
 public class BrochureActivity extends AppCompatActivity implements BrochureView {
@@ -38,7 +37,7 @@ public class BrochureActivity extends AppCompatActivity implements BrochureView 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_brochure);
         setSupportActionBar(binding.appBar.toolbar);
 
-        dataManager = ((Catalogs)getApplication()).getDataManager();
+        dataManager = ((Catalogs) getApplication()).getDataManager();
         api = ((Catalogs) getApplication()).getApiManager();
         db = ((Catalogs) getApplication()).getDatabaseInstance();
 
@@ -50,8 +49,8 @@ public class BrochureActivity extends AppCompatActivity implements BrochureView 
     }
 
 
-    private void loadBrochure(){
-        if(!NetworkUtils.isNetworkConnected(this)){
+    private void loadBrochure() {
+        if (!CommonUtils.isNetworkConnected(this)) {
             showError();
             return;
         }
@@ -67,9 +66,9 @@ public class BrochureActivity extends AppCompatActivity implements BrochureView 
         getSupportActionBar().setSubtitle(brochure.getBrand().getName() + " " + getResources().getString(R.string.brochure_to) + " " + CommonUtils.convertDate(brochure.getValidity().getEnd()));
         CommonUtils.animateView(binding.progressOverlay.customProgressOverlay, View.GONE, 0.4f, 200);
 
-        LinearLayoutManager layout  = new LinearLayoutManager(BrochureActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layout = new LinearLayoutManager(BrochureActivity.this, LinearLayoutManager.HORIZONTAL, false);
         binding.brochureImageView.setLayoutManager(layout);
-        LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
+        LinearSnapHelper linearSnapHelper = new SnapUtils();
         linearSnapHelper.attachToRecyclerView(binding.brochureImageView);
         BrochureImagesAdapter mAdapter = new BrochureImagesAdapter(this, brochure.getPages());
         binding.brochureImageView.setAdapter(mAdapter);

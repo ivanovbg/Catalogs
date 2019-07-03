@@ -1,7 +1,6 @@
 package com.softomotion.catalogs.core.map.presenter;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.softomotion.catalogs.core.AppConsts;
@@ -16,7 +15,7 @@ import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.database.entities.Brochure;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.core.map.MapView;
-import com.softomotion.catalogs.map.models.MapPin;
+import com.softomotion.catalogs.ui.map.models.MapPin;
 
 import java.util.ArrayList;
 import java.util.HashMap;

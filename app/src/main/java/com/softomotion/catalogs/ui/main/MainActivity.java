@@ -1,4 +1,4 @@
-package com.softomotion.catalogs.main;
+package com.softomotion.catalogs.ui.main;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -22,9 +22,8 @@ import com.softomotion.catalogs.data.api.Api;
 import com.softomotion.catalogs.data.api.models.cities.Cities;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.core.adapters.CitiesAdapter;
-import com.softomotion.catalogs.map.MapActivity;
+import com.softomotion.catalogs.ui.map.MapActivity;
 import com.softomotion.catalogs.utils.CommonUtils;
-import com.softomotion.catalogs.utils.NetworkUtils;
 import com.softomotion.catalogs.utils.Pager;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.data.prefs.DataManager;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private Api api;
     private DatabaseInstance db;
     private CitiesAdapter citiesAdapter;
-    private MainPresenter<MainActivity> mainPressenter;
+    private MainPresenter<MainActivity> mainPresenter;
     public brochuresFragmentListener brochuresFragmentListener;
     public favouritesFragmentListener favouritesFragmentListener;
     private List<Cities> cities;
@@ -64,18 +63,18 @@ public class MainActivity extends AppCompatActivity implements MainView {
         db = ((Catalogs) getApplication()).getDatabaseInstance();
 
 
-        mainPressenter = new MainPresenter<>(dataManager, api, db);
-        mainPressenter.onAttach(this);
+        mainPresenter = new MainPresenter<>(dataManager, api, db);
+        mainPresenter.onAttach(this);
         binding.bottomNavigation.bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
-        if (!NetworkUtils.isNetworkConnected(this)) {
+        if (!CommonUtils.isNetworkConnected(this)) {
             showError();
         } else {
-            mainPressenter.loadCities();
+            mainPresenter.loadCities();
         }
     }
 
-    @Override
+
     public void setupPager() {
         binding.pager.setAdapter(pagerAdapter);
         binding.tabLayout.setupWithViewPager(binding.pager);

@@ -14,4 +14,8 @@
     <dimen name="brochure_view_cardview_margin">7dp</dimen>
     <dimen name="brochure_view_cardview_elevation">7dp</dimen>
     <dimen name="app_bar_elevation">0dp</dimen>
+    <dimen name="brochure_image_item_corner_radius">0dp</dimen>
+    <dimen name="brochure_image_item_elevation">0dp</dimen>
+    <dimen name="brochure_item_elevation">7dp</dimen>
+    <dimen name="brochure_item_corder_radius">0dp</dimen>
 </resources>

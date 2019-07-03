@@ -7,8 +7,8 @@
     android:layout_margin="@dimen/brochure_view_cardview_margin"
     android:elevation="@dimen/brochure_view_cardview_elevation"
     app:cardBackgroundColor="@android:color/transparent"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="0dp"
+    app:cardCornerRadius="@dimen/brochure_image_item_corner_radius"
+    app:cardElevation="@dimen/brochure_image_item_elevation"
     app:cardPreventCornerOverlap="false">
 
 

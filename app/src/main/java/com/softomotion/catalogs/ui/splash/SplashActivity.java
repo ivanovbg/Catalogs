@@ -1,4 +1,4 @@
-package com.softomotion.catalogs.splash;
+package com.softomotion.catalogs.ui.splash;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +14,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -29,24 +27,19 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.core.splash.SplashView;
 import com.softomotion.catalogs.core.splash.presenter.SplashPresenter;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
-import com.softomotion.catalogs.main.MainActivity;
+import com.softomotion.catalogs.ui.main.MainActivity;
 import com.softomotion.catalogs.R;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.data.api.Api;
 import com.softomotion.catalogs.utils.CommonUtils;
-import com.softomotion.catalogs.utils.NetworkUtils;
-
-import java.util.HashMap;
 
 public class SplashActivity extends AppCompatActivity implements SplashView {
 
@@ -81,7 +74,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     }
 
     private void run() {
-        if (!NetworkUtils.isNetworkConnected(this)) {
+        if (!CommonUtils.isNetworkConnected(this)) {
             showError();
             return;
         }
@@ -183,25 +176,25 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                     }
                 }).addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        int statusCode = ((ApiException) e).getStatusCode();
-                        switch (statusCode) {
-                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                try {
-                                    ResolvableApiException rae = (ResolvableApiException) e;
-                                    rae.startResolutionForResult(SplashActivity.this, AppConsts.REQUEST_CHECK_SETTINGS);
-                                } catch (IntentSender.SendIntentException sie) {
-                                    showError();
-                                    break;
-                                }
-                                break;
-                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                showError();
-                                break;
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                int statusCode = ((ApiException) e).getStatusCode();
+                switch (statusCode) {
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        try {
+                            ResolvableApiException rae = (ResolvableApiException) e;
+                            rae.startResolutionForResult(SplashActivity.this, AppConsts.REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException sie) {
+                            showError();
+                            break;
                         }
-                    }
-                });
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        showError();
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -223,7 +216,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
     }
 

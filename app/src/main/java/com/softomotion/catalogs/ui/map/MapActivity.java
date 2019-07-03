@@ -1,15 +1,12 @@
-package com.softomotion.catalogs.map;
+package com.softomotion.catalogs.ui.map;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +26,7 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.softomotion.catalogs.Catalogs;
 import com.softomotion.catalogs.R;
-import com.softomotion.catalogs.brochure.BrochureActivity;
+import com.softomotion.catalogs.ui.brochure.BrochureActivity;
 import com.softomotion.catalogs.core.AppConsts;
 import com.softomotion.catalogs.core.adapters.BrochuresListAdapter;
 import com.softomotion.catalogs.core.adapters.BrochuresListHolder;
@@ -40,15 +37,11 @@ import com.softomotion.catalogs.data.api.models.city.City;
 import com.softomotion.catalogs.data.database.DatabaseInstance;
 import com.softomotion.catalogs.data.prefs.DataManager;
 import com.softomotion.catalogs.databinding.ActivityMapBinding;
-import com.softomotion.catalogs.databinding.CustomBrochuresPopupBinding;
-import com.softomotion.catalogs.main.MainActivity;
-import com.softomotion.catalogs.map.models.MapPin;
+import com.softomotion.catalogs.ui.map.models.MapPin;
 import com.softomotion.catalogs.core.map.presenter.MapPresenter;
 import com.softomotion.catalogs.utils.CommonUtils;
 import com.softomotion.catalogs.utils.MapPinRender;
-import com.softomotion.catalogs.utils.NetworkUtils;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, MapView, ClusterManager.OnClusterClickListener<MapPin>, ClusterManager.OnClusterItemClickListener<MapPin> {
@@ -99,7 +92,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     private void loadPins() {
-        if (!NetworkUtils.isNetworkConnected(this)) {
+        if (!CommonUtils.isNetworkConnected(this)) {
             showError();
             return;
         }

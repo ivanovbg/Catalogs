@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface MainView extends View {
     void showCities(List<Cities> cities);
-    void setupPager();
     void showError();
 }

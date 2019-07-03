@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.softomotion.catalogs.main.BrochuresFragment;
-import com.softomotion.catalogs.main.FavouritesFragment;
+import com.softomotion.catalogs.ui.main.BrochuresFragment;
+import com.softomotion.catalogs.ui.main.FavouritesFragment;
 
 
 public class Pager extends FragmentStatePagerAdapter {

@@ -5,7 +5,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".main.FavouritesFragment">
+        tools:context=".ui.main.FavouritesFragment">
 
         <include
             android:id="@+id/brochureRecycleView"

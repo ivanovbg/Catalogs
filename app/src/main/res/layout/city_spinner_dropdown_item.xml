@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/spinner_city_name"
-android:singleLine="true"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:ellipsize="marquee"
-android:textAllCaps="true"
-android:textSize="@dimen/spinner_item_text_size"
-android:padding="@dimen/spinner_item_padding"
-android:background="@drawable/city_spinner_selector"
-android:textAlignment="inherit"/>
+    android:id="@+id/spinner_city_name"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/city_spinner_selector"
+    android:ellipsize="marquee"
+    android:padding="@dimen/spinner_item_padding"
+    android:singleLine="true"
+    android:textAlignment="inherit"
+    android:textAllCaps="true"
+    android:textSize="@dimen/spinner_item_text_size" />

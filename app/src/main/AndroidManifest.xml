@@ -15,8 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".brochure.BrochureActivity" android:label="@string/brochure_view" />
-        <activity android:name=".splash.SplashActivity">
+        <activity android:name=".ui.brochure.BrochureActivity" android:label="@string/brochure_view" />
+        <activity android:name=".ui.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".map.MapActivity"
+            android:name=".ui.map.MapActivity"
             android:label="@string/map" />
 
         <meta-data
@@ -34,7 +34,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".main.MainActivity"  android:label="@string/brochures" />
+        <activity android:name=".ui.main.MainActivity"  android:label="@string/brochures" />
     </application>
 
 </manifest>

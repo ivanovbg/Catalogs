@@ -3,7 +3,7 @@ package com.softomotion.catalogs.core.map;
 import com.softomotion.catalogs.core.base.View;
 import com.softomotion.catalogs.data.api.models.brochures.BrochuresItem;
 import com.softomotion.catalogs.data.api.models.city.City;
-import com.softomotion.catalogs.map.models.MapPin;
+import com.softomotion.catalogs.ui.map.models.MapPin;
 
 import java.util.List;
 
