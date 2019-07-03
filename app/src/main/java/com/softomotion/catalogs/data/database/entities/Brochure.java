@@ -16,7 +16,7 @@ public class Brochure {
     @ColumnInfo(name = "brochure_id")
     private Integer brochure_id;
 
-    @ColumnInfo(name="brochure_image")
+    @ColumnInfo(name = "brochure_image")
     private String brochure_image;
 
     public int getUid() {

@@ -10,29 +10,28 @@ public class DataManager {
         mSharedPrefsHelper = sharedPrefsHelper;
     }
 
-    public void setUserCityId(Integer city_id){
+    public void setUserCityId(Integer city_id) {
         mSharedPrefsHelper.putUserCityId(city_id);
     }
 
-    public Integer getUserCityId(){
+    public Integer getUserCityId() {
         return mSharedPrefsHelper.getUserCityId();
     }
 
-    public void setLocationCityId(Integer city_id){
+    public void setLocationCityId(Integer city_id) {
         mSharedPrefsHelper.putLocationCityId(city_id);
     }
 
-    public Integer getLocationCityId(){
+    public Integer getLocationCityId() {
         return mSharedPrefsHelper.getLocationCityId();
     }
 
 
-
-    public void putCityId(Integer city_id){
+    public void putCityId(Integer city_id) {
         mSharedPrefsHelper.putCityId(city_id);
     }
 
-    public  Integer getCityId(){
+    public Integer getCityId() {
         return mSharedPrefsHelper.getCityId();
     }
 }

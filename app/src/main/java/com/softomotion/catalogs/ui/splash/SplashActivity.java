@@ -225,7 +225,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     protected void onPause() {
         super.onPause();
 
-        if (mRequestingLocationUpdates) {
+        if (mRequestingLocationUpdates != null && mRequestingLocationUpdates) {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         }
     }

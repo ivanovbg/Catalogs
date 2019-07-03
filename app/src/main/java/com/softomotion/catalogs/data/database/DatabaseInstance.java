@@ -18,7 +18,7 @@ public class DatabaseInstance {
     private static DatabaseInstance instance;
 
     public static DatabaseInstance getInstance(Context context) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new DatabaseInstance(context);
         }
         return instance;
@@ -41,7 +41,7 @@ public class DatabaseInstance {
         }.execute();
     }
 
-    public void unlikeBrochure(Integer brochure_id){
+    public void unlikeBrochure(Integer brochure_id) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -52,7 +52,7 @@ public class DatabaseInstance {
     }
 
 
-    public void getFavouritesBrochures(DatabaseListener<List<Brochure>> callback){
+    public void getFavouritesBrochures(DatabaseListener<List<Brochure>> callback) {
         new AsyncTask<Void, Void, List<Brochure>>() {
             @Override
             protected List<Brochure> doInBackground(Void... voids) {
@@ -68,7 +68,7 @@ public class DatabaseInstance {
         }.execute();
     }
 
-    public void getLikedBrochures(DatabaseListener<List<Integer>> callback){
+    public void getLikedBrochures(DatabaseListener<List<Integer>> callback) {
         new AsyncTask<Void, Void, List<Integer>>() {
             @Override
             protected List<Integer> doInBackground(Void... voids) {
@@ -88,7 +88,6 @@ public class DatabaseInstance {
     public interface DatabaseListener<T> {
         void onFavouriteBrochuresLoaded(T data);
     }
-
 
 
 }

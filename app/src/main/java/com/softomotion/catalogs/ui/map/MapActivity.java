@@ -144,7 +144,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public boolean onClusterItemClick(MapPin mapPin) {
         showBrochuresDialog();
 
-
         Integer[] brands_filters = {mapPin.getmBrandId()};
         mapPresenter.loadBrochures(dataManager.getLocationCityId(), brands_filters);
         return false;
