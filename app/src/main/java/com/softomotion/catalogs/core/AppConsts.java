@@ -3,10 +3,10 @@ package com.softomotion.catalogs.core;
 import java.util.HashMap;
 
 public interface AppConsts {
-    String STATIC_DOMAIN = "https://static.broshura.bg/img/";
+    String STATIC_DOMAIN = "https://static.localhost.bg/img/";
 
     //api end points
-    String API_ENDPOINT = "https://api.broshura.bg/";
+    String API_ENDPOINT = "http://localhost/";
     String API_CITY_PATH = "/closest_city";
     String API_CITIES_PATH = "/cities";
     String API_PINS_PATH = "/get_map_pins";
